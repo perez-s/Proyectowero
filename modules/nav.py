@@ -41,7 +41,6 @@ def MenuButtons(user_roles=None):
         users = [k for k, v in user_roles.items() if v == 'user']
 
         HomeNav()
-        Page1Nav()
 
         # Show page 1 if the username that logged in is an admin.
         if ss.username in admins:
