@@ -18,11 +18,11 @@ st.header('Home page')
 # Protected content in home page.
 if ss.get('authentication_status'):
     st.markdown("""
-# ¡Bienvenido a **FormEase**!
+# ¡Bienvenido a **Weroapp**!
 
-¡Hola y bienvenido a **FormEase**, la forma más sencilla de ingresar, gestionar y enviar tus datos!
+¡Hola y bienvenido a **Weroapp**, la forma más sencilla de ingresar, gestionar y enviar tus datos!
 
-Ya sea que recopiles respuestas de encuestas, registres detalles de inventario o hagas seguimiento de hitos de proyectos, FormEase te ofrece:
+Ya sea que recopiles respuestas de encuestas, registres detalles de inventario o hagas seguimiento de hitos de proyectos, Weroapp te ofrece:
 
 - **Constructor de Formularios Intuitivo**  
   Crea y personaliza campos en segundos — sin necesidad de programar.
@@ -55,7 +55,7 @@ Ya sea que recopiles respuestas de encuestas, registres detalles de inventario o
 
 - Consulta nuestra [Documentación](#) para guías paso a paso.  
 - Visita el [Foro de la Comunidad](#) para hacer preguntas y compartir consejos.  
-- Escribe a nuestro equipo de soporte: [support@formease.app](mailto:support@formease.app).
+- Escribe a nuestro equipo de soporte: [support@Weroapp.app](mailto:support@Weroapp.app).
 
 ¡Hagamos que la entrada de datos sea sencilla! 🚀
 """)
