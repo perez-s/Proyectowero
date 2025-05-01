@@ -7,18 +7,18 @@ def HomeNav():
 
 
 def LoginNav():
-    st.sidebar.page_link("pages/account.py", label="Ingresar", icon='🔐')
+    st.sidebar.page_link("./pages/account.py", label="Ingresar", icon='🔐')
 
 
 def Page1Nav():
-    st.sidebar.page_link("pages/page1.py", label="Page 1", icon='✈️')
+    st.sidebar.page_link("./pages/page1.py", label="Page 1", icon='✈️')
 
 
 def Page2Nav():
-    st.sidebar.page_link("pages/page2.py", label="Page 2", icon='📚')
+    st.sidebar.page_link("./pages/page2.py", label="Page 2", icon='📚')
 
 def DataEntryAdmin():
-    st.sidebar.page_link("pages/1_Data_Entry.py", label="Data entry", icon='📚')
+    st.sidebar.page_link("./pages/1_Data_Entry.py", label="Data entry", icon='📚')
 
 
 def MenuButtons(user_roles=None):
