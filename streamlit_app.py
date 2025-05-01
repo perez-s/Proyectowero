@@ -12,7 +12,6 @@ if 'authentication_status' not in ss:
 
 
 MenuButtons(get_roles())
-st.header('Home page')
 
 
 # Protected content in home page.
