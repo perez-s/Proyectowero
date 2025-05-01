@@ -18,7 +18,7 @@ def Page2Nav():
     st.sidebar.page_link("./pages/page2.py", label="Page 2", icon='📚')
 
 def DataEntryAdmin():
-    st.sidebar.page_link("/mount/src/proyectowero/pages/1_Data_Entry.py", label="Data entry", icon='📚')
+    st.sidebar.page_link("pages/page2.py", label="Data entry", icon='📚')
 
 
 def MenuButtons(user_roles=None):
