@@ -19,4 +19,5 @@ st.header('Home page')
 if ss.get('authentication_status'):
     st.write('This content is only accessible for logged in users.')
 else:
-    st.write('Please log in on login page.')
+    st.switch_page('./pages/account.py')
+    #st.write('Please log in on login page.')
