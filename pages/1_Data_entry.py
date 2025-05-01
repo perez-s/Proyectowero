@@ -1,5 +1,4 @@
 import streamlit as st
-import pandas as pd
 from streamlit import session_state as ss
 from modules.nav import MenuButtons
 from pages.account import get_roles
@@ -36,10 +35,6 @@ tab1, tab2, tab3 = st.tabs(["Tabla II-C", "Dog", "Owl"])
 
 with tab1:
 
-#    def form_callback(data1, data2):
-#    with open('pages/notes.csv', 'a+') as f:    #Append & read mode
-#        f.write(f"{data1},{data2}\n")
-    
     st.write("TABLA II-B. IDENTIFICACIÓN DE OPERADORES Y/O ADMINISTRADORES DEL PLAN")
 
     col1, col2 = st.columns(2)
@@ -60,11 +55,5 @@ with tab1:
         observaciones_input = st.text_area('Obsevaciones')
     
     st.button('Registrar')
-
-
-        
-
-
-
     st.info("Previsualización")
-    st.dataframe(pd.read_csv("pages/notes.csv",names=["Stock","Note"],encoding='latin1'),height=300)
+            
