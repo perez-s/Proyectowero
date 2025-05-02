@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit import session_state as ss
+import pandas as pd
 from modules.nav import MenuButtons
 from pages.account import get_roles
 import geonamescache
