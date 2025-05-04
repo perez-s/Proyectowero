@@ -50,8 +50,8 @@ authenticator = stauth.Authenticate(
 
 authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
 if ss["authentication_status"]:
-    authenticator.logout(location='main')    
-    st.write(f'Welcome *{ss["name"]}*')
+    authenticator.logout(location='main')
+    st.write(f'Bienvenido/a *{ss["name"]}*')
 
 elif ss["authentication_status"] is False:
     st.error('Usuario/contraseña incorrecta')

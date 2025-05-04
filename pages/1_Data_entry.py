@@ -4,6 +4,18 @@ import pandas as pd
 from modules.nav import MenuButtons
 from pages.account import get_roles
 import geonamescache
+import zipfile
+import time
+import pathlib
+import shutil
+import os
+
+
+
+directory = pathlib.Path("informes/admin")
+
+timestr = time.strftime("%Y%m%d")
+print(timestr) 
 
 logo1 = 'Logo1.png'
 logo2 = 'Logo2.png'
@@ -79,17 +91,19 @@ with tab1:
         col5, col6 = st.columns(2)        
         with col5:      
             if st.button('Añadir', type='secondary'):
-                with open('pages/notes.csv', 'a+') as f:    #Append & read mode
+                with open('informes/admin/notes.csv', 'a+') as f:    #Append & read mode
                     f.write(f"{nombre_input},{nacionalidad_input},{nit_input},{correo_input},{telefono_input},{direccion_input},{ciudad_input},{observaciones_input}\n")
+                st.success('Registro añadido exitosamente')
         with col6:
-            if st.button('Limpiar', type='tertiary'):
-                f = open('pages/notes.csv', "w+")
+            if st.button('Limpiar formato', type='tertiary'):
+                f = open('informes/admin/notes.csv', "w+")
                 f.close()
+                st.info('Formato limpiado exitosamente')
 
 
-    st.info("Previsualización")
+    st.info("Previsualización del formato")
     
-    st.dataframe(pd.read_csv("pages/notes.csv",names=["Nombre","Nacionalidad","NIT","Correo","Telefono","Dirección","Ciudad","Observaciones"],encoding='latin1'),height=300)
+    st.dataframe(pd.read_csv("informes/admin/notes.csv",names=["Nombre","Nacionalidad","NIT","Correo","Telefono","Dirección","Ciudad","Observaciones"],encoding='latin1'),height=300)
 
 with tab2:
 
@@ -125,22 +139,32 @@ with tab2:
     with col3:
         col5, col6 = st.columns(2)        
         with col5:
-            logopath=''      
             if st.button('Añadir', key='registrar2', type='secondary'):
-                with open('pages/notes2.csv', 'a+') as f:    #Append & read mode
+                if os.path.isdir('informes/admin/logos/') == False:
+                    os.mkdir('informes/admin/logos')
+                
+                logopath=f'informes/admin/logos/{nit_input2}-logo'+f'.{pathlib.Path(logo_input2.name).suffix}'      
+                with open(logopath, mode='wb') as w:
+                    w.write(logo_input2.getvalue())
+                with open('informes/admin/notes2.csv', 'a+') as f:    #Append & read mode
                     f.write(f"{razonsocial_input2};{nit_input2};{correo_input2};{telefono_input2};{direccion_input2};{ciudad_input2};{formaparticipacion_input2};{numinvolucrados_input2};{numacto_input2};{ciudades_input2};{'N/A'};{logopath};{procesotransformacion_input2};{tipoproducto_input2};{destinofinal_input2};{captransformacion_input2}\n")
+                st.success('Registro añadido exitosamente')
+
         with col6:
-            if st.button('Limpiar', key='limpiar2', type='tertiary'):
-                f = open('pages/notes2.csv', "w+")
+            if st.button('Limpiar formato', key='limpiar2', type='tertiary'):
+                f = open('informes/admin/notes2.csv', "w+")
                 f.close()
+                if os.path.isdir('informes/admin/logos/'):
+                    shutil.rmtree('informes/admin/logos/')
+                st.info('Formato limpiado exitosamente')
 
     st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
     "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
     "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
     
-    st.info("Previsualización")
+    st.info("Previsualización del formato")
     
-    st.dataframe(pd.read_csv("pages/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
+    st.dataframe(pd.read_csv("informes/admin/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
 
 with tab3:
 
@@ -172,16 +196,26 @@ with tab3:
         with col5:
             logopath=''      
             if st.button('Añadir', key='registrar3', type='secondary'):
-                with open('pages/notes3.csv', 'a+') as f:    #Append & read mode
-                    f.write(f"{acciones_input3};{objetivo_input3};{estrategia_input3};{local_input3};{actores_input3};{tipoinvmod};{valor_input3};{actoresben_input3};{orgben_input3};{soporte_input3}\n")
+                if os.path.isdir('informes/admin/fotos_registro/') == False:
+                    os.mkdir('informes/admin/fotos_registro')
+                
+                fotospath=f'informes/admin/fotos_registro/{actores_input3}-foto'+f'.{pathlib.Path(soporte_input3.name).suffix}'      
+                with open(fotospath, mode='wb') as w:
+                    w.write(soporte_input3.getvalue())
+                with open('informes/admin/notes3.csv', 'a+') as f:    #Append & read mode
+                    f.write(f"{acciones_input3};{objetivo_input3};{estrategia_input3};{local_input3};{actores_input3};{tipoinvmod};{valor_input3};{actoresben_input3};{orgben_input3};{fotospath}\n")
+                st.success('Registro añadido exitosamente')
         with col6:
             if st.button('Limpiar', key='limpiar3', type='tertiary'):
-                f = open('pages/notes3.csv', "w+")
+                f = open('informes/admin/notes3.csv', "w+")
                 f.close()
+                if os.path.isdir('informes/admin/fotos_registro/'):
+                    shutil.rmtree('informes/admin/fotos_registro/')
+                st.info('Formato limpiado exitosamente')
 
-    st.info("Previsualización")
+    st.info("Previsualización del formato")
     
-    st.dataframe(pd.read_csv("pages/notes3.csv",delimiter=';',names=["Acciones adelantadas","Objetivo","Descripción de la estrategia","Localización geográfica","Actores beneficiados: gestores, recicladores empresas transformadoras (personas naturales y/o empresas)","Tipo de inversión (Dinero=D / Especie=E)","Valor recursos destinados ($ COP)","Número de actores beneficiados","Cantidad de organizaciones beneficiadas","Registro fotográfico soporte"], encoding='latin1'),height=300)
+    st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Acciones adelantadas","Objetivo","Descripción de la estrategia","Localización geográfica","Actores beneficiados: gestores, recicladores empresas transformadoras (personas naturales y/o empresas)","Tipo de inversión (Dinero=D / Especie=E)","Valor recursos destinados ($ COP)","Número de actores beneficiados","Cantidad de organizaciones beneficiadas","Registro fotográfico soporte"], encoding='latin1'),height=300)
 
 with tab4:
     anexo4_input4 = st.file_uploader('Anexo IV. Inscripción de las empresas transformadoras', type='pdf')
@@ -189,5 +223,43 @@ with tab4:
     anexo6_input4 = st.file_uploader('Copia de la respuesta de la CAR al radicado de inscripción como empresa transformadora', type='pdf')
     anexo7_input4 = st.file_uploader('Anexo I. Tabla I-a. Certificación de toneladas aprovechadas y contenido mínimo de material reciclado', type='pdf')
     metasypro_input4 = st.file_uploader('Informe de avance en el cumplimiento de metas y proyección', type='pdf')
+    
+    if st.button('Añadir', key='registrar4', type='secondary'):
+        if os.path.isdir('informes/admin/anexos/') == False:
+            os.mkdir('informes/admin/anexos')
 
-st.button('Enviar', key='enviar', type='primary')
+        anexospath=f'informes/admin/anexos/anexo4'+f'.{pathlib.Path(anexo4_input4.name).suffix}'      
+        with open(anexospath, mode='wb') as w:
+                    w.write(anexo4_input4.getvalue())
+
+        anexospath=f'informes/admin/anexos/anexo5'+f'.{pathlib.Path(anexo5_input4.name).suffix}'      
+        with open(anexospath, mode='wb') as w:
+                    w.write(anexo5_input4.getvalue())
+        
+        anexospath=f'informes/admin/anexos/anexo6'+f'.{pathlib.Path(anexo6_input4.name).suffix}'      
+        with open(anexospath, mode='wb') as w:
+                    w.write(anexo6_input4.getvalue())
+
+        anexospath=f'informes/admin/anexos/anexo7'+f'.{pathlib.Path(anexo7_input4.name).suffix}'      
+        with open(anexospath, mode='wb') as w:
+                    w.write(anexo7_input4.getvalue()) 
+        
+        anexospath=f'informes/admin/anexos/anexo8'+f'.{pathlib.Path(metasypro_input4.name).suffix}'      
+        with open(anexospath, mode='wb') as w:
+                    w.write(metasypro_input4.getvalue()) 
+        
+    if st.button('Limpiar anexos', key='limpiar4', type='tertiary'):
+        if os.path.isdir('informes/admin/anexos/'):
+            shutil.rmtree('informes/admin/anexos/')
+        st.info('Anexos limpiados exitosamente')
+
+
+
+st.divider()
+
+if st.button('Enviar', key='enviar', type='primary'):
+    shutil.make_archive(f'informes/admin/reporte_{timestr}', 'zip', directory)
+    # with zipfile.ZipFile(f"{timestr}-directory.zip", mode="w") as archive:
+    #     for file_path in directory.iterdir():
+    #          archive.write(file_path)
+    st.success('Reporte generado exitosamente')
