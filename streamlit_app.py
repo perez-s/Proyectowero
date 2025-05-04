@@ -36,6 +36,7 @@ st.logo(logo2, icon_image=logo2, size='large')
 
 # Protected content in home page.
 if ss.get('authentication_status'):
+    st.image('Logo1.png')
     st.markdown("""
 # ¡Bienvenido a **Weroapp**!
 
