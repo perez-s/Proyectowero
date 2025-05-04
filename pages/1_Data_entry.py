@@ -28,11 +28,9 @@ citiesabv = list(cities.keys())
 
 for i in citiesabv:
     citiesdict.update({cities[i]['name']:countries[cities[i]['countrycode']]['name']})
-print(citiesdict)
 
-# you really wanna do something more useful with the data...
 
-tab1, tab2, tab3 = st.tabs(["Tabla II-C", "Dog", "Owl"])
+tab1, tab2, tab3 = st.tabs(["Tabla II-C", "Tabla II-B", "Tabla II-D"])
 
 with tab1:
 
@@ -40,47 +38,27 @@ with tab1:
 
     col1, col2 = st.columns(2)
     with col1:
-        nombre_input = st.text_input('Nombre')
-        nacionalidad_input = st.selectbox('Nacionalidad', countrieslist, index=None, placeholder='Seleccione un país',accept_new_options=False)
+        nombre_input = st.text_input('Nombre',key='nombre_input_key')
+        nacionalidad_input = st.selectbox('Nacionalidad', countrieslist, index=None, placeholder='Seleccione un país',accept_new_options=False, key='nacionalidad_input_key')
         
-        nit_input=st.number_input("NIT", value=None, placeholder=None)
-        correo_input = st.text_input('Correo electrónico')
+        nit_input=st.number_input("NIT", value=None, placeholder=None, key='nit_input_key')
+        correo_input = st.text_input('Correo electrónico', key='correo_input_key')
     with col2:
-        telefono_input = st.text_input('Teléfono')
-        direccion_input = st.text_input('Dirección física')
+        telefono_input = st.text_input('Teléfono', key='telefono_input_key')
+        direccion_input = st.text_input('Dirección física', key='direccion_input_key')
         
         citieslist = [k for k, v in citiesdict.items() if v == nacionalidad_input]
         citieslist.sort()
         
-        ciudad_input = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False)
-        observaciones_input = st.text_area('Obsevaciones')
+        ciudad_input = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input_key')
+        observaciones_input = st.text_area('Obsevaciones', key='observaciones_input_key')
+
+    st.write(ciudad_input)
+
+    if st.button('Registrar'):
+        with open('pages/notes.csv', 'a+') as f:    #Append & read mode
+            f.write(f"{nombre_input},{nacionalidad_input},{nit_input},{correo_input},{telefono_input},{direccion_input},{ciudad_input},{observaciones_input}\n")
     
-    st.button('Registrar')
     st.info("Previsualización")
-
-    # https://gist.githubusercontent.com/tvst/036da038ab3e999a64497f42de966a92/raw/f0db274dd4d295ee173b4d52939be5ad55ae058d/SessionState.py
-
-    # Create an empty dataframe
-    data = pd.DataFrame(columns=["Random"])
-    st.text("Original dataframe")
-
-    # with every interaction, the script runs from top to bottom
-    # resulting in the empty dataframe
-    st.dataframe(data) 
-
-    # persist state of dataframe
-    session_state = ss.get(df=data)
-
-    # random value to append; could be a num_input widget if you want
-    # random_value = np.random.randn()
-
-    if st.button("Append random value"):
-        # update dataframe state
-        session_state.df = session_state.df.append({'Random': nombre_input}, ignore_index=True)
-        st.text("Updated dataframe")
-        st.dataframe(session_state.df)
-
-    # still empty as state is not persisted
-    st.text("Original dataframe")
-    st.dataframe(data)
-            
+    
+    st.dataframe(pd.read_csv("pages/notes.csv",names=["Nombre","Nacionalidad","NIT","Correo","Telefono","Dirección","Ciudad","Observaciones"],encoding='latin1'),height=300)
