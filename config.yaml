@@ -4,7 +4,7 @@ cookie:
   name: some_cookie_name
 credentials:
   usernames:
-    jsmith:
+    Acoplasticos:
       email: jsmith@gmail.com
       failed_login_attempts: 0
       logged_in: true
