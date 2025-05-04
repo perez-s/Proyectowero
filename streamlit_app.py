@@ -3,6 +3,21 @@ from streamlit import session_state as ss
 from modules.nav import MenuButtons
 from pages.account import get_roles
 
+logo1 = 'Logo1.png'
+logo2 = 'Logo2.png'
+st.logo(logo2, icon_image=logo2, size='large')
+
+st.set_page_config(
+    page_title="Wero test app",
+    page_icon="Logo2.png",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://www.extremelycoolapp.com/help',
+        'Report a bug': "https://www.extremelycoolapp.com/bug",
+        'About': "# This is a header. This is an *extremely* cool app!"
+    }
+)
+
 # If the user reloads or refreshes the page while still logged in,
 # go to the account page to restore the login status. Note reloading
 # the page changes the session id and previous state values are lost.
