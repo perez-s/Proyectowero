@@ -8,8 +8,8 @@ credentials:
       email: jsmith@gmail.com
       failed_login_attempts: 0
       logged_in: true
-      name: John Smith
-      password: $2b$12$qgpdymNsKCf9Hjwg.NSXiO9/ItCdKVNoJBWQf6EAk9n73HgkAJmEC
+      name: Acoplasticos
+      password: $2b$12$93eZgvlMKu.lofBW5KuFI.G5TTZolOQ86Nf0vj5645OPJffTXLmW2
       role: admin
     rbriggs:
       email: rbriggs@gmail.com

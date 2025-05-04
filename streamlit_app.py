@@ -14,6 +14,11 @@ if 'authentication_status' not in ss:
 MenuButtons(get_roles())
 
 
+logo1 = 'Logo1.png'
+logo2 = 'Logo2.png'
+st.logo(logo2, icon_image=logo2, size='large')
+
+
 # Protected content in home page.
 if ss.get('authentication_status'):
     st.markdown("""
