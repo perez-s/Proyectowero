@@ -39,8 +39,6 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-def login_callback():
-    st.switch_page('streamlit_app.py')
 
 authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
 if ss["authentication_status"]:
