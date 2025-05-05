@@ -5,6 +5,7 @@ import yaml
 from yaml.loader import SafeLoader
 from modules.nav import MenuButtons
 
+
 logo1 = 'Logo1.png'
 logo2 = 'Logo2.png'
 st.logo(logo2, icon_image=logo2, size='large')
