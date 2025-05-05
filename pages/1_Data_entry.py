@@ -4,12 +4,11 @@ import pandas as pd
 from modules.nav import MenuButtons
 from pages.account import get_roles
 import geonamescache
-import zipfile
 import time
 import pathlib
 import shutil
 import os
-
+from pages.account import authenticator
 
 
 directory = pathlib.Path("informes/admin")
@@ -35,9 +34,12 @@ st.set_page_config(
 if 'authentication_status' not in ss:
     st.switch_page('./pages/account.py')
 
+with st.sidebar:
+    st.write(f'Bienvenido/a *{ss["name"]}*')
+
 MenuButtons(get_roles())
 
-
+authenticator.logout(button_name='Cerrar sesión', location='sidebar')
 
 #################################       Country and City lists      ###################################################
 

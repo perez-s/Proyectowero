@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit import session_state as ss
 from modules.nav import MenuButtons
 from pages.account import get_roles
+from pages.account import authenticator
 
 logo1 = 'Logo1.png'
 logo2 = 'Logo2.png'
@@ -22,11 +23,13 @@ st.set_page_config(
 # go to the account page to restore the login status. Note reloading
 # the page changes the session id and previous state values are lost.
 # What we are doing is only to relogin the user.
-if 'authentication_status' not in ss:
-    st.switch_page('./pages/account.py')
 
+with st.sidebar:
+    st.write(f'Bienvenido/a *{ss["name"]}*')
 
 MenuButtons(get_roles())
+
+authenticator.logout(button_name='Cerrar sesión', location='sidebar')
 
 
 logo1 = 'Logo1.png'

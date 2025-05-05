@@ -9,16 +9,7 @@ logo1 = 'Logo1.png'
 logo2 = 'Logo2.png'
 st.logo(logo2, icon_image=logo2, size='large')
 
-st.set_page_config(
-    page_title="Wero test app",
-    page_icon="Logo2.png",
-    initial_sidebar_state="expanded",
-    menu_items={
-        'Get Help': 'https://www.extremelycoolapp.com/help',
-        'Report a bug': "https://www.extremelycoolapp.com/bug",
-        'About': "# This is a header. This is an *extremely* cool app!"
-    }
-)
+
 
 
 CONFIG_FILENAME = 'config.yaml'
@@ -48,10 +39,12 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
+def login_callback():
+    st.switch_page('streamlit_app.py')
+
 authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
 if ss["authentication_status"]:
-    authenticator.logout(location='main')
-    st.write(f'Bienvenido/a *{ss["name"]}*')
+    st.switch_page('streamlit_app.py')
 
 elif ss["authentication_status"] is False:
     st.error('Usuario/contraseña incorrecta')

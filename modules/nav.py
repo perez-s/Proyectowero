@@ -39,5 +39,4 @@ def MenuButtons(user_roles=None):
             DataEntryAdmin()
         if ss.username in users:
             DataEntryAdmin()            
-        # (2) users with user and admin roles have access to page 2.
-    LoginNav()     
+        # (2) users with user and admin roles have access to page 2.     
