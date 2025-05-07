@@ -3,14 +3,14 @@ from streamlit import session_state as ss
 
 
 def HomeNav():
-    st.sidebar.page_link("streamlit_app.py", label="Inicio", icon='🏠')
+    st.sidebar.page_link("Inicio.py", label="Inicio", icon='🏠')
 
 
 def LoginNav():
-    st.sidebar.page_link("./pages/account.py", label="Ingresar", icon='🔐')
+    st.sidebar.page_link("./pages/Cuenta.py", label="Ingresar", icon='🔐')
 
 def DataEntryAdmin():
-    st.sidebar.page_link("pages/1_Data_entry.py", label="Formatos", icon='📚')
+    st.sidebar.page_link("pages/Formatos.py", label="Formatos", icon='📚')
 
 
 def MenuButtons(user_roles=None):
