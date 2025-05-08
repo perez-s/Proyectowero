@@ -49,9 +49,9 @@ def get_roles():
 authenticator = stauth.Authenticate('config.yaml')
 
 
-# col1, col2, col3 = st.columns(3)
-# with col2:
-#     st.image('Logo2.png', use_container_width=True)
+col1, col2, col3 = st.columns(3)
+with col2:
+    st.image('Logo2.png', use_container_width=True)
 
 authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
 
