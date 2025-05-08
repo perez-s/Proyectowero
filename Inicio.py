@@ -1,30 +1,26 @@
 import streamlit as st
 from streamlit import session_state as ss
 from modules.nav import MenuButtons
-from pages.Cuenta import get_roles
-from pages.Cuenta import authenticator
-
-# st.set_page_config(
-#     page_title="Inicio",
-#     page_icon="Logo2.png",
-#     initial_sidebar_state="expanded"
-# )
-
-
-logo1 = 'Logo1.png'
-logo2 = 'Logo2.png'
-logo3 = 'Logo3.png'
-logo4 = 'Logo4.png'
-st.logo(logo4, icon_image=logo2, size='large')
-
+from pages.Cuenta import get_roles, authenticator
 
 # If the user reloads or refreshes the page while still logged in,
 # go to the Cuenta page to restore the login status. Note reloading
 # the page changes the session id and previous state values are lost.
 # What we are doing is only to relogin the user.
 
-# Protected content in home page.
-if ss.get('authentication_status'):
+# Protected content in home page..
+
+if 'authentication_status' not in ss:    st.switch_page('./pages/Cuenta.py')
+
+elif st.session_state['authentication_status'] is None:
+    st.switch_page('pages/Cuenta.py')
+
+elif ss.get('authentication_status'):
+    logo1 = 'Logo1.png'
+    logo2 = 'Logo2.png'
+    logo3 = 'Logo3.png'
+    logo4 = 'Logo4.png'
+    st.logo(logo4, icon_image=logo2, size='large')
     st.markdown("""
     <style>
         [data-testid=stSidebar] {
@@ -43,10 +39,7 @@ if ss.get('authentication_status'):
         st.write(f'Bienvenido/a *{ss["name"]}*')
     MenuButtons(get_roles())
     authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True)
-        
     st.image('Logo1.png')
-    st.write(st.session_state.get('authentication_status'))
-
     st.markdown("""
 # ¡Bienvenido a **Weroapp**!
 
@@ -65,6 +58,3 @@ if ss.get('authentication_status'):
 ¡Hagamos que la entrada de datos sea sencilla! 🚀
 """)
 
-else:
-    st.switch_page('./pages/Cuenta.py')
-    #st.write('Please log in on login page.')
