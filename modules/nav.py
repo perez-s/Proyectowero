@@ -7,11 +7,7 @@ authenticator = stauth.Authenticate('config.yaml')
 
 
 def HomeNav():
-    st.sidebar.page_link("./pages/Cuenta.py", label="Inicio", icon='🏠')
-
-
-def LoginNav():
-    st.sidebar.page_link("./pages/Cuenta.py", label="Ingresar", icon='🔐')
+    st.sidebar.page_link("./pages/Inicio.py", label="Inicio", icon='🏠')
 
 def DataEntryAdmin():
     st.sidebar.page_link("pages/Formatos.py", label="Formatos", icon='📚')

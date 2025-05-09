@@ -1,21 +1,21 @@
 import streamlit as st
 from streamlit import session_state as ss
 from modules.nav import MenuButtons
-from pages.Cuenta import get_roles, authenticator
+from pages.Inicio import get_roles, authenticator
 
 # If the user reloads or refreshes the page while still logged in,
-# go to the Cuenta page to restore the login status. Note reloading
+# go to the Inicio page to restore the login status. Note reloading
 # the page changes the session id and previous state values are lost.
 # What we are doing is only to relogin the user.
 
 # Protected content in home page..
 
 if 'authentication_status' not in ss:
-    st.switch_page('./pages/Cuenta.py')
+    st.switch_page('./pages/Inicio.py')
 
 elif st.session_state['authentication_status'] is None:
-    st.switch_page('pages/Cuenta.py')
+    st.switch_page('pages/Inicio.py')
 
 elif ss.get('authentication_status'):
-    st.switch_page('pages/Cuenta.py')
+    st.switch_page('pages/Inicio.py')
 

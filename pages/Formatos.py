@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit import session_state as ss
 import pandas as pd
 from modules.nav import MenuButtons
-from pages.Cuenta import get_roles, authenticator
+from pages.Inicio import get_roles, authenticator
 import geonamescache
 import pathlib
 import shutil
@@ -19,7 +19,7 @@ import re
 
 # if ss.get('authentication_status'):
 if 'authentication_status' not in ss:
-    st.switch_page('./pages/Cuenta.py')
+    st.switch_page('./pages/Inicio.py')
 if ss["authentication_status"]:
     logo1 = 'Logo1.png'
     logo2 = 'Logo2.png'
@@ -363,4 +363,4 @@ if ss["authentication_status"]:
         #          archive.write(file_path)
         st.success('Reporte generado exitosamente')
 else:
-    st.switch_page("./pages/Cuenta.py")
+    st.switch_page("./pages/Inicio.py")
