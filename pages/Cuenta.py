@@ -1,10 +1,9 @@
 import streamlit as st
 from streamlit import session_state as ss
-import streamlit_authenticator as stauth
 import yaml
 import time
 from yaml.loader import SafeLoader
-from modules.nav import MenuButtons
+from modules.nav import MenuButtons, authenticator
 
     # st.set_page_config(
     #     page_title="Cuenta",
@@ -46,14 +45,13 @@ def get_roles():
 
     return {username: user_info['role'] for username, user_info in cred['usernames'].items() if 'role' in user_info}
 
-authenticator = stauth.Authenticate('config.yaml')
 
 
-col1, col2, col3 = st.columns(3)
-with col2:
-    st.image('Logo2.png', use_container_width=True)
+# col1, col2, col3 = st.columns(3)
+# with col2:
+#     st.image('Logo2.png', use_container_width=True)
 
-authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
+# authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
 
 css="""
 <style>
@@ -67,46 +65,69 @@ css="""
 st.write(css, unsafe_allow_html=True)
 
 if ss["authentication_status"]:
+    with st.sidebar:
+        st.write(f'Benvenido/a *{ss["name"]}*i')
+    MenuButtons(get_roles())
     time.sleep(0.5)
-    st.success('Sesion iniciada exitosamente!')
+    st.toast('Sesion iniciada exitosamente!')
     time.sleep(0.5)
-    st.switch_page('Inicio.py')
-elif ss["authentication_status"] is False:
-#     st.markdown("""
-#     <style>
-#         [data-testid=stSidebar] {
-#             background-color: #31d3ae;
-#         }
-#     </style>
-#     """, unsafe_allow_html=True)
-#     st.html("""
-#   <style>
-#     [alt=Logo] {
-#       height: 3.5rem;
-#     }
-#   </style>
-#         """)
-#     with st.sidebar:
-#         st.write('')
-    st.error('Usuario/contraseña incorrecta')
-elif ss["authentication_status"] is None:
-#     st.markdown("""
-#     <style>
-#         [data-testid=stSidebar] {
-#             background-color: #31d3ae;
-#         }
-#     </style>
-#     """, unsafe_allow_html=True)
-#     st.html("""
-#   <style>
-#     [alt=Logo] {
-#       height: 3.5rem;
-#     }
-#   </style>
-#         """)
-#     with st.sidebar:
-#         st.write('')
-    st.warning('Por favor ingresa usuario y contraseña')
+    st.markdown("""
+    <style>
+        section[data-testid="stSidebar"][aria-expanded="true"]{
+            display: initial;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    logo1 = 'Logo1.png'
+    logo2 = 'Logo2.png'
+    logo3 = 'Logo3.png'
+    logo4 = 'Logo4.png'
+    st.logo(logo4, icon_image=logo2, size='large')
+    st.markdown("""
+    <style>
+        [data-testid=stSidebar] {
+            background-color: #31d3ae;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    st.html("""
+  <style>
+    [alt=Logo] {
+      height: 3.5rem;
+    }
+  </style>
+        """)
+    # authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True)
+    st.image('Logo1.png')
+    st.markdown("""
+# ¡Bienvenido a **Weroapp**!
+
+¡Hola y bienvenido a **Weroapp**, la forma más sencilla de ingresar, gestionar y enviar tus datos!
+
+- **Formularios Intuitivos**    
+- **Guardado y Borradores**  
+- **Exportación de Datos**  
+
+---
+
+## ¿Necesitas ayuda?
+
+- Escribe a nuestro equipo de soporte: [soporte@Wero.com.co](mailto:soporte@Wero.com.co).
+
+¡Hagamos que la entrada de datos sea sencilla! 🚀
+""")
+
+else:
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.image('Logo2.png', use_container_width=True)
+
+    authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
+    if ss["authentication_status"] is False:
+        st.error('Usuario/contraseña incorrecta')
+    elif ss["authentication_status"] is None:
+        st.warning('Por favor ingresa usuario y contraseña')
 
 # We call below code in case of registration, reset password, etc.
 
@@ -117,4 +138,5 @@ elif ss["authentication_status"] is None:
 #     st.session_state.authenticator = authenticator
 
 # Call this late because we show the page navigator depending on who logged in.
-MenuButtons(get_roles())
+
+

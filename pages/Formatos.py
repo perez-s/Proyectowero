@@ -20,8 +20,7 @@ import re
 # if ss.get('authentication_status'):
 if 'authentication_status' not in ss:
     st.switch_page('./pages/Cuenta.py')
-
-if ss.get('authentication_status'):
+if ss["authentication_status"]:
     logo1 = 'Logo1.png'
     logo2 = 'Logo2.png'
     logo3 = 'Logo3.png'
@@ -45,7 +44,7 @@ if ss.get('authentication_status'):
     with st.sidebar:
         st.write(f'Bienvenido/a *{ss["name"]}*')
     MenuButtons(get_roles())
-    authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True)
+    # authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True)
 
     #################################       Country and City lists      ###################################################
 
@@ -85,12 +84,12 @@ if ss.get('authentication_status'):
         if not number.isdigit():
             return "Ingresa un valor numerico."
         return None
-    
+
     def validate_none(element):
         if element == None:
             return "Ingresa un valor valido."
         return None
-    
+
     def validate_empty(element):
         if element == '':
             return "Ingresa un valor valido."
@@ -185,9 +184,10 @@ if ss.get('authentication_status'):
                 st.session_state.ciudad_input_key = None
                 st.session_state.observaciones_input_key = ''
 
-
+        st.write(validcheck)
+        st.write(ss["authentication_status"])
         if validcheck != True:
-            if st.button('Añadir', type='secondary', key='añadirfalse'):
+            if st.button('Añadir1', type='secondary', key='añadirfalse'):
                 s = ''
                 for i in validcheck:
                     s += "-" + i + "  \n"
@@ -362,6 +362,5 @@ if ss.get('authentication_status'):
         #     for file_path in directory.iterdir():
         #          archive.write(file_path)
         st.success('Reporte generado exitosamente')
-
 else:
-    st.switch_page('./pages/Cuenta.py')
+    st.switch_page("./pages/Cuenta.py")

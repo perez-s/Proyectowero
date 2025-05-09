@@ -1,9 +1,13 @@
 import streamlit as st
 from streamlit import session_state as ss
+import streamlit_authenticator as stauth
+
+authenticator = stauth.Authenticate('config.yaml')
+
 
 
 def HomeNav():
-    st.sidebar.page_link("Inicio.py", label="Inicio", icon='🏠')
+    st.sidebar.page_link("./pages/Cuenta.py", label="Inicio", icon='🏠')
 
 
 def LoginNav():
@@ -37,6 +41,7 @@ def MenuButtons(user_roles=None):
         # Show page 1 if the username that logged in is an admin.
         if ss.username in admins:
             DataEntryAdmin()
+            authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True)
         if ss.username in users:
             DataEntryAdmin()            
         # (2) users with user and admin roles have access to page 2.     
