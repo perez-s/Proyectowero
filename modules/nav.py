@@ -33,11 +33,10 @@ def MenuButtons(user_roles=None):
         users = [k for k, v in user_roles.items() if v == 'user']
 
         HomeNav()
-
         # Show page 1 if the username that logged in is an admin.
         if ss.username in admins:
             DataEntryAdmin()
-            authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True)
+
         if ss.username in users:
             DataEntryAdmin()            
         # (2) users with user and admin roles have access to page 2.     

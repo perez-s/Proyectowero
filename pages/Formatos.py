@@ -8,16 +8,7 @@ import pathlib
 import shutil
 import os
 import re
-# import streamlit_authenticator as stauth
-# import yaml
-# from yaml.loader import SafeLoader
 
-# st.set_page_config(
-#     page_title="Formatos",
-#     page_icon="📚",
-# )
-
-# if ss.get('authentication_status'):
 if 'authentication_status' not in ss:
     st.switch_page('./pages/Inicio.py')
 if ss["authentication_status"]:
@@ -44,6 +35,7 @@ if ss["authentication_status"]:
     with st.sidebar:
         st.write(f'Bienvenido/a *{ss["name"]}*')
     MenuButtons(get_roles())
+    authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True, key='logoutformats')
     # authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True)
 
     #################################       Country and City lists      ###################################################
@@ -68,10 +60,31 @@ if ss["authentication_status"]:
         citiesdict.update({cities[i]['name']:countries[cities[i]['countrycode']]['name']})
 
     ####################################################################################################
-
     def validate_name(name):
-        if not name.isalpha():
-                return "Ingrese un nombre con solo caracteres alfabeticos."
+        # Check if name is empty or None
+        if not name or name.isspace():
+            return "El nombre no puede estar vacío"
+        
+        # Remove leading/trailing spaces
+        name = name.strip()
+        
+        # Check if name contains only letters and spaces
+        if not all(char.isalpha() or char.isspace() for char in name):
+            return " debe contener solo letras y espacios"
+        
+        # Check for multiple consecutive spaces
+        if "  " in name:
+            return " no puede contener espacios múltiples"
+        
+        # Check minimum length (e.g., 2 characters)
+        if len(name) < 2:
+            return " debe tener al menos 2 caracteres"
+        
+        # Check maximum length (e.g., 50 characters)
+        if len(name) > 50:
+            return " no puede exceder los 50 caracteres"
+        
+        # If all validations pass
         return None
 
     def validate_email(email):
@@ -79,10 +92,32 @@ if ss["authentication_status"]:
         if valid:
             return None
         return "Ingresa un correo valido."
-
+    
     def validate_number(number):
         if not number.isdigit():
             return "Ingresa un valor numerico."
+    
+    def validate_phone(phone):
+        # Check if phone is empty or None
+        if not phone or phone is None:
+            return " teléfono no puede estar vacío"
+        
+        # Convert to string if it's a number
+        phone = str(phone)
+        
+        # Remove any spaces
+        phone = phone.strip()
+        
+        # Check if it contains only digits
+        if not phone.isdigit():
+            return " debe contener solo dígitos"
+        
+        # Check length (only 7 or 10 digits allowed)
+        length = len(phone)
+        if length != 7 and length != 10:
+            return " debe tener 7 dígitos (fijo) o 10 dígitos (celular)"
+        
+        # If all validations pass
         return None
 
     def validate_none(element):
@@ -115,7 +150,7 @@ if ss["authentication_status"]:
         if d_error:
             errors.append('Correo electrónico: ' + d_error)
 
-        e_error = validate_none(e)
+        e_error = validate_phone(e)
         if e_error:
             errors.append('Teléfono: ' + e_error)
 
@@ -137,15 +172,100 @@ if ss["authentication_status"]:
 
         return True
 
+    def validate_form2(razon_social, nit, correo, telefono, direccion, ciudad, forma_participacion, num_involucrados, num_acto, ciudades, logo, proceso, tipo_producto, destino_final, cap_transformacion, observaciones):
+        errors = []
+        
+        # Validate business name
+        razon_error = validate_empty(razon_social)
+        if razon_error:
+            errors.append('Razón social: ' + razon_error)
+        
+        # Validate NIT
+        nit_error = validate_none(nit)
+        if nit_error:
+            errors.append('CC o NIT: ' + nit_error)
+        
+        # Validate email
+        correo_error = validate_email(correo)
+        if correo_error:
+            errors.append('Correo electrónico: ' + correo_error)
+
+        # Validate phone
+        telefono_error = validate_phone(telefono)
+        if telefono_error:
+            errors.append('Teléfono: ' + telefono_error)
+
+        # Validate address
+        direccion_error = validate_empty(direccion)
+        if direccion_error:
+            errors.append('Dirección: ' + direccion_error)
+
+        # Validate city
+        ciudad_error = validate_none(ciudad)
+        if ciudad_error:
+            errors.append('Ciudad: ' + ciudad_error)
+            
+        # Validate participation form
+        forma_error = validate_empty(forma_participacion)
+        if forma_error:
+            errors.append('Forma de participación: ' + forma_error)
+            
+        # Validate number of people involved
+        num_inv_error = validate_none(num_involucrados)
+        if num_inv_error:
+            errors.append('Número de personas involucradas: ' + num_inv_error)
+            
+        # Validate administrative act number
+        num_acto_error = validate_none(num_acto)
+        if num_acto_error:
+            errors.append('Número de acto administrativo: ' + num_acto_error)
+            
+        # Validate cities coverage
+        if not ciudades:
+            errors.append('Ciudades de cobertura: Debe seleccionar al menos una ciudad')
+
+        # Validate logo upload
+        logo_error = validate_none(logo)
+        if logo_error:
+            errors.append('Logo:'+ logo_error)          
+
+        # Validate transformation process
+        proceso_error = validate_empty(proceso)
+        if proceso_error:
+            errors.append('Proceso de transformación: ' + proceso_error)
+            
+        # Validate product type
+        tipo_error = validate_empty(tipo_producto)
+        if tipo_error:
+            errors.append('Tipo de producto: ' + tipo_error)
+            
+        # Validate final destination
+        destino_error = validate_none(destino_final)
+        if destino_error:
+            errors.append('Destino final: ' + destino_error)
+            
+        # Validate transformation capacity
+        cap_error = validate_none(cap_transformacion)
+        if cap_error:
+            errors.append('Capacidad de transformación: ' + cap_error)
+            
+        # Validate observations
+        obs_error = validate_empty(observaciones)
+        if obs_error:
+            errors.append('Observaciones: ' + obs_error)
+        
+        # If there are errors, return them
+        if errors:
+            return errors
+
+        return True
+
     ####################################################################################################
 
 
     tab1, tab2, tab4 = st.tabs(["Operadores del Plan", "Actores", 'Soportes'])
 
     with tab1:
-
-        st.write("TABLA II-B. IDENTIFICACIÓN DE OPERADORES Y/O ADMINISTRADORES DEL PLAN")
-
         col1, col2 = st.columns(2)
         with col1:
             nombre_input = st.text_input('Nombre',key='nombre_input_key')
@@ -168,12 +288,10 @@ if ss["authentication_status"]:
             # col5, col6 = st.columns(2)        
             # with col5:
         validcheck=validate_form1(nombre_input,nacionalidad_input,nit_input,correo_input,telefono_input,direccion_input,ciudad_input,observaciones_input)  
-        
-        st.session_state.placeholder = ''
         def on_click():
                 with open('informes/admin/notes.csv', 'a+') as f:    #Append & read mode
                     f.write(f"{nombre_input},{nacionalidad_input},{nit_input},{correo_input},{telefono_input},{direccion_input},{ciudad_input},{observaciones_input}\n")
-                    st.success('Registro añadido exitosamente')  
+                    st.toast('Registro añadido exitosamente', icon='✅')  
 
                 st.session_state.nombre_input_key = ""
                 st.session_state.nacionalidad_input_key = None
@@ -184,21 +302,20 @@ if ss["authentication_status"]:
                 st.session_state.ciudad_input_key = None
                 st.session_state.observaciones_input_key = ''
 
-        st.write(validcheck)
-        st.write(ss["authentication_status"])
         if validcheck != True:
-            if st.button('Añadir1', type='secondary', key='añadirfalse'):
+            if st.button('Añadir', type='secondary', key='añadirfalse'):
                 s = ''
                 for i in validcheck:
-                    s += "-" + i + "  \n"
-                st.error(s)
+                    st.toast(i, icon='⚠️')
+                #     s += "-" + i + "  \n"
+                # st.error(s)
 
         elif validcheck == True:
                 st.button('Añadir', type='secondary', on_click=on_click, key='añadirtrue')
         if st.button('Limpiar formato', type='tertiary'):
             f = open('informes/admin/notes.csv', "w+")
             f.close()
-            st.info('Formato limpiado exitosamente')
+            st.toast('Formato limpiado exitosamente', icon='ℹ️')
 
 
         st.info("Previsualización del formato")
@@ -212,51 +329,73 @@ if ss["authentication_status"]:
 
             col1, col2 = st.columns(2)
             with col1:
-                razonsocial_input2 = st.text_input('Razón social')
-                nit_input2=st.number_input("CC o NIT", value=None, placeholder=None, min_value=0, step=1)
-                correo_input2 = st.text_input('Correo electrónico')
-                telefono_input2 = st.number_input('Teléfono', value=None, placeholder=None, step=1)
-                direccion_input2 = st.text_input('Dirección física')
+                razonsocial_input2 = st.text_input('Razón social', key='razonsocial_input2')
+                nit_input2=st.number_input("CC o NIT", value=None, placeholder=None, min_value=0, step=1, key='nit_input2')
+                correo_input2 = st.text_input('Correo electrónico', key='correo_input2')
+                telefono_input2 = st.number_input('Teléfono', value=None, placeholder=None, step=1, key='telefono_input2')
+                direccion_input2 = st.text_input('Dirección física', key='direccion_input2')
                 citieslist = [k for k, v in citiesdict.items() if v == 'Colombia']
                 citieslist.sort()
-                ciudad_input2 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False)
-                formaparticipacion_input2 = st.text_input('Forma de participación y responsabilidades (*)')
-                numinvolucrados_input2 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1)
-                numacto_input2 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1)
+                ciudad_input2 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input2')
+                formaparticipacion_input2 = st.text_input('Forma de participación y responsabilidades (*)', key='formaparticipacion_input2')
+                numinvolucrados_input2 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input2')
+                numacto_input2 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1, key='numacto_input2')
 
             with col2:
-                ciudades_input2 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False)
-                capacidadtransporte_input2 = st.text_input('Capacidad de transporte y almacenamiento', disabled=True)
-                logo_input2 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"])
-                procesotransformacion_input2 = st.text_input('Proceso de transformación de la ET')
-                tipoproducto_input2 = st.text_input('Tipo de producto obtenido')
-                destinofinal_input2 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None)
-                captransformacion_input2 = st.number_input('Capacidad de transformación (ton/año)', value=None, placeholder=None, min_value=0, step=1)
-                observaciones_input = st.text_area('Obsevaciones')
-            
-            col3, col4 = st.columns(2)
-            with col3:
-                col5, col6 = st.columns(2)        
-                with col5:
-                    if st.button('Añadir', key='registrar2', type='secondary'):
+                ciudades_input2 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input2')
+                capacidadtransporte_input2 = st.text_input('Capacidad de transporte y almacenamiento', disabled=True, key='capacidadtransporte_input2')
+                logo_input2 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key='logo_input2')
+                procesotransformacion_input2 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input2')
+                tipoproducto_input2 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input2')
+                destinofinal_input2 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input2')
+                captransformacion_input2 = st.number_input('Capacidad de transformación (ton/año)', value=None, placeholder=None, min_value=0, step=1, key='captransformacion_input2')
+                observaciones_input2 = st.text_area('Obsevaciones', key='observaciones_input2')
+
+                validcheck=validate_form2(razonsocial_input2,nit_input2,correo_input2,telefono_input2,direccion_input2,ciudad_input2,formaparticipacion_input2,numinvolucrados_input2,numacto_input2,ciudades_input2,logo_input2,procesotransformacion_input2,tipoproducto_input2,destinofinal_input2,captransformacion_input2,observaciones_input2)  
+                def on_click2():
                         if os.path.isdir('informes/admin/logos/') == False:
                             os.mkdir('informes/admin/logos')
-                        
                         logopath=f'informes/admin/logos/{nit_input2}-logo'+f'.{pathlib.Path(logo_input2.name).suffix}'      
                         with open(logopath, mode='wb') as w:
                             w.write(logo_input2.getvalue())
-                        with open('informes/admin/notes2.csv', 'a+') as f:    #Append & read mode
+
+                        with open('informes/admin/notes.csv', 'a+') as f:    #Append & read mode
                             f.write(f"{razonsocial_input2};{nit_input2};{correo_input2};{telefono_input2};{direccion_input2};{ciudad_input2};{formaparticipacion_input2};{numinvolucrados_input2};{numacto_input2};{ciudades_input2};{'N/A'};{logopath};{procesotransformacion_input2};{tipoproducto_input2};{destinofinal_input2};{captransformacion_input2}\n")
-                        st.success('Registro añadido exitosamente')
+                            st.toast('Registro añadido exitosamente', icon='✅')  
+                        st.session_state.razonsocial_input2 = ""
+                        st.session_state.nit_input2 = None 
+                        st.session_state.correo_input2 = ""
+                        st.session_state.telefono_input2 = None
+                        st.session_state.direccion_input2 = ""
+                        st.session_state.ciudad_input2 = None
+                        st.session_state.formaparticipacion_input2 = ""
+                        st.session_state.numinvolucrados_input2 = None
+                        st.session_state.numacto_input2 = None
+                        st.session_state.ciudades_input2 = []
+                        st.session_state.procesotransformacion_input2 = ""
+                        st.session_state.tipoproducto_input2 = ""
+                        st.session_state.destinofinal_input2 = None
+                        st.session_state.captransformacion_input2 = None
+                        st.session_state.observaciones_input2 = ""
+                    
+            if validcheck != True:
+                if st.button('Añadir', type='secondary', key='añadirfalse2'):
+                    s = ''
+                    for i in validcheck:
+                        st.toast(i, icon='⚠️')
+                    #     s += "-" + i + "  \n"
+                    # st.error(s)
 
-                with col6:
-                    if st.button('Limpiar formato', key='limpiar2', type='tertiary'):
-                        f = open('informes/admin/notes2.csv', "w+")
-                        f.close()
-                        if os.path.isdir('informes/admin/logos/'):
-                            shutil.rmtree('informes/admin/logos/')
-                        st.info('Formato limpiado exitosamente')
+            elif validcheck == True:
+                    st.button('Añadir', type='secondary', on_click=on_click2, key='añadirtrue2')
 
+            if st.button('Limpiar formato', key='limpiar2', type='tertiary'):
+                f = open('informes/admin/notes2.csv', "w+")
+                f.close()
+                if os.path.isdir('informes/admin/logos/'):
+                    shutil.rmtree('informes/admin/logos/')
+                st.toast('Formato limpiado exitosamente', icon='ℹ️')
+                    
             st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
             "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
             "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
