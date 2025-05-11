@@ -8,6 +8,8 @@ import pathlib
 import shutil
 import os
 import re
+import streamlit_authenticator as stauth
+authenticator = stauth.Authenticate('config.yaml')
 
 if 'authentication_status' not in ss:
     st.switch_page('./pages/Inicio.py')

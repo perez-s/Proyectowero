@@ -3,7 +3,10 @@ from streamlit import session_state as ss
 import yaml
 import time
 from yaml.loader import SafeLoader
-from modules.nav import MenuButtons, authenticator
+from modules.nav import MenuButtons
+import streamlit_authenticator as stauth
+
+authenticator = stauth.Authenticate('config.yaml')
 
     # st.set_page_config(
     #     page_title="Cuenta",
