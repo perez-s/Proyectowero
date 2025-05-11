@@ -1,8 +1,6 @@
 import streamlit as st
 from streamlit import session_state as ss
-import streamlit_authenticator as stauth
 
-authenticator = stauth.Authenticate('config.yaml')
 
 
 

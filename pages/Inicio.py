@@ -3,7 +3,10 @@ from streamlit import session_state as ss
 import yaml
 import time
 from yaml.loader import SafeLoader
-from modules.nav import MenuButtons, authenticator
+from modules.nav import MenuButtons
+import streamlit_authenticator as stauth
+
+authenticator = stauth.Authenticate('config.yaml')
 
     # st.set_page_config(
     #     page_title="Cuenta",
@@ -61,8 +64,22 @@ css="""
     }
 </style>
 """
-
 st.write(css, unsafe_allow_html=True)
+
+
+
+authenticator.login(location='unrendered', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'}, key='loginhome1')
+
+if ss["authentication_status"] is False:
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.image('Logo2.png', use_container_width=True)
+elif ss["authentication_status"] is None:
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.image('Logo2.png', use_container_width=True)
+
+authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'}, key='loginhome1')
 
 if ss["authentication_status"]:
     with st.sidebar:
@@ -121,25 +138,10 @@ if ss["authentication_status"]:
         """
         )
 
-else:
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        st.image('Logo2.png', use_container_width=True)
-        
-    authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'})
-    if ss["authentication_status"] is False:
-        st.error('Usuario/contraseña incorrecta')
-    elif ss["authentication_status"] is None:
-        st.warning('Por favor ingresa usuario y contraseña')
 
-# We call below code in case of registration, reset password, etc.
-
-# with open('config.yaml', 'w') as file:
-#     yaml.dump(config, file, default_flow_style=False, allow_unicode=True)
-
-# if 'authenticator' not in st.session_state:
-#     st.session_state.authenticator = authenticator
-
-# Call this late because we show the page navigator depending on who logged in.
+if ss["authentication_status"] is False:
+    st.error('Usuario/contraseña incorrecta')
+elif ss["authentication_status"] is None:
+    st.warning('Por favor ingresa usuario y contraseña')
 
 
