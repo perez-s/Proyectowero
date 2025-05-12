@@ -12,6 +12,7 @@ import time
 import yaml
 from yaml.loader import SafeLoader
 
+steps = 0
 
 CONFIG_FILENAME = 'config.yaml'
 
@@ -27,6 +28,14 @@ def get_roles():
 
     return {username: user_info['role'] for username, user_info in cred['usernames'].items() if 'role' in user_info}
 
+if "uploader_key2" not in st.session_state:
+    st.session_state.uploader_key2 = 0
+
+if "uploader_key3" not in st.session_state:
+    st.session_state.uploader_key3 = 0
+
+if "uploader_key4" not in st.session_state:
+    st.session_state.uploader_key4 = 0
 
 
 
@@ -144,7 +153,7 @@ if ss["authentication_status"]:
 
     def validate_none(element):
         if element == None:
-            return "Ingresa un valor valido."
+            return "Campo obligtorio."
         return None
 
     def validate_empty(element):
@@ -344,6 +353,46 @@ if ss["authentication_status"]:
 
         return True
 
+    def validate_form4(anexo4, anexo5, anexo6, anexo7, anexo8, anexo9, anexo10, metasypro):
+        errors = []
+
+        # Validate NIT
+        anexo4_error = validate_none(anexo4)
+        if anexo4_error:
+            errors.append('Anexo 1: ' + anexo4_error)
+
+        anexo5_error = validate_none(anexo5)
+        if anexo5_error:
+            errors.append('Anexo 2: ' + anexo5_error)
+
+        anexo6_error = validate_none(anexo6)
+        if anexo6_error:
+            errors.append('Anexo 3: ' + anexo6_error)
+
+        anexo7_error = validate_none(anexo7)
+        if anexo7_error:
+            errors.append('Anexo 4: ' + anexo7_error)
+        
+        anexo8_error = validate_none(anexo8)
+        if anexo8_error:
+            errors.append('Anexo 5: ' + anexo8_error)
+
+        anexo9_error = validate_none(anexo9)
+        if anexo9_error:
+            errors.append('Anexo 6: ' + anexo9_error)
+        
+        anexo10_error = validate_none(anexo10)
+        if anexo10_error:
+            errors.append('Anexo 7: ' + anexo10_error)
+        
+        metasypro_error = validate_none(metasypro)
+        if metasypro_error:
+            errors.append('Anexo 8: ' + metasypro_error)
+        
+        if errors:
+            return errors
+
+        return True
     ####################################################################################################
 
 
@@ -426,7 +475,7 @@ if ss["authentication_status"]:
             with col2:
                 ciudades_input2 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input2')
                 capacidadtransporte_input2 = st.text_input('Capacidad de transporte y almacenamiento', disabled=True, key='capacidadtransporte_input2')
-                logo_input2 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key='logo_input2')
+                logo_input2 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key=f"uploader_{st.session_state.uploader_key2}")
                 procesotransformacion_input2 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input2')
                 tipoproducto_input2 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input2')
                 destinofinal_input2 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input2')
@@ -457,6 +506,7 @@ if ss["authentication_status"]:
                 st.session_state.tipoproducto_input2 = ""
                 st.session_state.destinofinal_input2 = None
                 st.session_state.captransformacion_input2 = None
+                st.session_state.uploader_key2 += 1
 
                     
             if validcheck != True:
@@ -480,7 +530,7 @@ if ss["authentication_status"]:
             st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
             "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
             "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
-            
+                        
             st.info("Previsualización del formato")
             
             st.dataframe(pd.read_csv("informes/admin/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
@@ -503,8 +553,8 @@ if ss["authentication_status"]:
             with col2:
                 ciudades_input3 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input3')
                 capacidadtransporte_input3 = st.text_input('Capacidad de transporte y almacenamiento', disabled=False, key='capacidadtransporte_input3')
-                logo_input3 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key='logo_input3')
-                procesotransformacion_input3 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input3')
+                logo_input3 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key=f"uploader_{st.session_state.uploader_key3}")
+                procesotransformacion_input3 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input3', disabled=True)
                 tipoproducto_input3 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input3', disabled=True)
                 destinofinal_input3 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input3', disabled=True)
                 captransformacion_input3 = st.number_input('Capacidad de transformación (ton/año)', value=None, placeholder=None, min_value=0, step=1, key='captransformacion_input3', disabled=True)
@@ -530,9 +580,8 @@ if ss["authentication_status"]:
                 st.session_state.numinvolucrados_input3 = None
                 st.session_state.numacto_input3 = None
                 st.session_state.ciudades_input3 = []
-                st.session_state.procesotransformacion_input3 = ""
                 st.session_state.capacidadtransporte_input3 = ""
-                st.session_state.logo_input3 = None
+                st.session_state.uploader_key3 += 1
                 
                     
             if validcheck != True:
@@ -556,57 +605,116 @@ if ss["authentication_status"]:
             st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
             "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
             "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
-            
+
+            st.warning("(**) Tipos de Gestores: \n"
+                "1. Asosicaciones de recicladores en proceso de formalización como prestadores del servicio público de aseo en la actividad de aprovechamiento \n"
+                "2. Asociaciones de recicladores formalizadas \n"
+                "3, Empresas únicamente que compran y venden materiales (\"intermediarios\") \n"
+                "4. Empresas de servicios públicos de aseo en la actividad de aprovechamiento \n"
+                "5. Otras entidades solidarias como ONG´S, fundaciones que canjean residuos por bienes y/o servicios \n"
+                )
+
             st.info("Previsualización del formato")
             
             st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
 
     with tab4:
-        anexo4_input4 = st.file_uploader('Anexo IV. Inscripción de las empresas transformadoras', type='pdf')
-        anexo5_input4 = st.file_uploader('Copia de los soportes anexados a la solicitud de inscripción de las empresas transformadoras ante la autoridad ambiental competente de su jurisdicción', type='pdf')
-        anexo6_input4 = st.file_uploader('Copia de la respuesta de la CAR al radicado de inscripción como empresa transformadora', type='pdf')
-        anexo7_input4 = st.file_uploader('Anexo I. Tabla I-a. Certificación de toneladas aprovechadas y contenido mínimo de material reciclado', type='pdf')
-        metasypro_input4 = st.file_uploader('Informe de avance en el cumplimiento de metas y proyección', type='pdf')
-        
-        if st.button('Añadir', key='registrar4', type='secondary'):
+        col1, col2 = st.columns(2)
+
+        with col1:
+            anexo4_input4 = st.file_uploader('Anexo 1: Inscripción de las empresas transformadoras', type='pdf', key=f"uploader1_{st.session_state.uploader_key4}")
+            anexo5_input4 = st.file_uploader('Anexo 2: Copia de los soportes anexados a la solicitud de inscripción de las empresas transformadoras ante la autoridad ambiental competente de su jurisdicción', type='pdf', key=f"uploader2_{st.session_state.uploader_key4}")
+            anexo6_input4 = st.file_uploader('Anexo 3: Copia de la respuesta de la CAR al radicado de inscripción como empresa transformadora', type='pdf', key=f"uploader3_{st.session_state.uploader_key4}")
+            anexo7_input4 = st.file_uploader('Anexo 4: Tabla I-a. Certificación de toneladas aprovechadas y contenido mínimo de material reciclado', type='pdf', key=f"uploader4_{st.session_state.uploader_key4}")
+        with col2:
+            anexo8_input4 = st.file_uploader('Anexo 5: Tabla I-b. Certificación de toneladas recolectadas', type='pdf', key=f"uploader5_{st.session_state.uploader_key4}")
+            anexo9_input4 = st.file_uploader('Anexo 6: Copia de las facturas mediante las cuales se realizó la venta a la empresa transformadora, que demuestre la transacción comercial', type='pdf', key=f"uploader6_{st.session_state.uploader_key4}")
+            anexo10_input4 = st.file_uploader('Anexo 7: Informe mecanismos equivalentes gestores - ASOCAÑA', type='pdf', key=f"uploader7_{st.session_state.uploader_key4}")
+            metasypro_input4 = st.file_uploader('Anexo 8: Informe de avance en el cumplimiento de metas y proyección', type='pdf', key=f"uploader8_{st.session_state.uploader_key4}")
+
+        validcheck=validate_form4(anexo4_input4,anexo5_input4,anexo6_input4,anexo7_input4,anexo8_input4,anexo9_input4,anexo10_input4,metasypro_input4)
+
+        def on_click4():
             if os.path.isdir('informes/admin/anexos/') == False:
                 os.mkdir('informes/admin/anexos')
 
-            anexospath=f'informes/admin/anexos/anexo4'+f'.{pathlib.Path(anexo4_input4.name).suffix}'      
+            anexospath=f'informes/admin/anexos/anexo1'+f'.{pathlib.Path(anexo4_input4.name).suffix}'      
             with open(anexospath, mode='wb') as w:
                         w.write(anexo4_input4.getvalue())
 
-            anexospath=f'informes/admin/anexos/anexo5'+f'.{pathlib.Path(anexo5_input4.name).suffix}'      
+            anexospath=f'informes/admin/anexos/anexo2'+f'.{pathlib.Path(anexo5_input4.name).suffix}'      
             with open(anexospath, mode='wb') as w:
                         w.write(anexo5_input4.getvalue())
             
-            anexospath=f'informes/admin/anexos/anexo6'+f'.{pathlib.Path(anexo6_input4.name).suffix}'      
+            anexospath=f'informes/admin/anexos/anexo3'+f'.{pathlib.Path(anexo6_input4.name).suffix}'      
             with open(anexospath, mode='wb') as w:
                         w.write(anexo6_input4.getvalue())
 
-            anexospath=f'informes/admin/anexos/anexo7'+f'.{pathlib.Path(anexo7_input4.name).suffix}'      
+            anexospath=f'informes/admin/anexos/anexo4'+f'.{pathlib.Path(anexo7_input4.name).suffix}'      
             with open(anexospath, mode='wb') as w:
-                        w.write(anexo7_input4.getvalue()) 
-            
+                        w.write(anexo7_input4.getvalue())
+
+            anexospath=f'informes/admin/anexos/anexo5'+f'.{pathlib.Path(anexo8_input4.name).suffix}'      
+            with open(anexospath, mode='wb') as w:
+                        w.write(anexo8_input4.getvalue())
+
+            anexospath=f'informes/admin/anexos/anexo6'+f'.{pathlib.Path(anexo9_input4.name).suffix}'      
+            with open(anexospath, mode='wb') as w:
+                        w.write(anexo9_input4.getvalue())
+
+            anexospath=f'informes/admin/anexos/anexo7'+f'.{pathlib.Path(anexo10_input4.name).suffix}'      
+            with open(anexospath, mode='wb') as w:
+                        w.write(anexo10_input4.getvalue())
+
             anexospath=f'informes/admin/anexos/anexo8'+f'.{pathlib.Path(metasypro_input4.name).suffix}'      
             with open(anexospath, mode='wb') as w:
-                        w.write(metasypro_input4.getvalue()) 
+                        w.write(metasypro_input4.getvalue())
+            
+            st.session_state.uploader_key4 += 1
+
+            st.toast('Anexos añadidos exitosamente', icon='✅')
+             
+
+        if validcheck != True:
+            if st.button('Añadir', type='secondary', key='añadirfalse4'):
+                s = ''
+                for i in validcheck:
+                    st.toast(i, icon='⚠️')
+                #     s += "-" + i + "  \n"
+                # st.error(s)
+        
+        elif validcheck == True:
+            st.button('Añadir', type='secondary', key='añadirtrue4', on_click=on_click4)
+        
             
         if st.button('Limpiar anexos', key='limpiar4', type='tertiary'):
             if os.path.isdir('informes/admin/anexos/'):
                 shutil.rmtree('informes/admin/anexos/')
             st.info('Anexos limpiados exitosamente')
 
-
-
     st.divider()
 
-    if st.button('Enviar', key='enviar', type='primary'):
-        timestr = time.strftime("%Y-%m-%d")
-        shutil.make_archive(f'informes/admin/reporte_{timestr}', 'zip', './informes')
-        # with zipfile.ZipFile(f"{timestr}-directory.zip", mode="w") as archive:
-        #     for file_path in directory.iterdir():
-        #          archive.write(file_path)
-        st.success('Reporte generado exitosamente')
+    @st.dialog('Confirmar')
+    def dialog():
+        st.write('¿Estas seguro que deseas enviar el reporte?')
+        st.write('Recuerda que una vez enviado no podrás editar el formato.')
+        if st.button('Enviar', key='enviar', type='primary'):
+            timestr = time.strftime("%Y-%m-%d")
+            shutil.make_archive(f'informes/reporte_{timestr}', 'zip', './informes/admin')
+            f = open('informes/admin/notes.csv', "w+")
+            f.close()
+            f = open('informes/admin/notes2.csv', "w+")
+            f.close()
+            f = open('informes/admin/notes3.csv', "w+")
+            f.close()
+            st.rerun()
+            if os.path.isdir('informes/admin/anexos/'):
+                shutil.rmtree('informes/admin/anexos/')
+
+            st.success(f'Reporte {timestr} generado exitosamente')
+    if "vote" not in st.session_state:
+        if st.button("Enviar reporte", type='primary', key='enviar_reporte'):
+            dialog()
+    
 else:
     st.switch_page("./pages/Inicio.py")
