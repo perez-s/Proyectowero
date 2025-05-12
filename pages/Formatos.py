@@ -2,19 +2,38 @@ import streamlit as st
 from streamlit import session_state as ss
 import pandas as pd
 from modules.nav import MenuButtons
-from pages.Inicio import get_roles, authenticator
+# from pages.Inicio import get_roles, authenticator
 import geonamescache
 import pathlib
 import shutil
 import os
 import re
 import time
+import yaml
+from yaml.loader import SafeLoader
+
+
+CONFIG_FILENAME = 'config.yaml'
+
+def get_roles():
+    """Gets user roles based on config file."""
+    with open(CONFIG_FILENAME) as file:
+        config = yaml.load(file, Loader=SafeLoader)
+
+    if config is not None:
+        cred = config['credentials']
+    else:
+        cred = {}
+
+    return {username: user_info['role'] for username, user_info in cred['usernames'].items() if 'role' in user_info}
+
 
 
 
 if 'authentication_status' not in ss:
     st.switch_page('./pages/Inicio.py')
 if ss["authentication_status"]:
+    authenticator = ss.get('authapp')
     logo1 = 'Logo1.png'
     logo2 = 'Logo2.png'
     logo3 = 'Logo3.png'
@@ -387,210 +406,160 @@ if ss["authentication_status"]:
         
         st.dataframe(pd.read_csv("informes/admin/notes.csv",names=["Nombre","Nacionalidad","NIT","Correo","Telefono","Dirección","Ciudad","Observaciones"],encoding='latin1'),height=300)
 
-    # with tab2:
-    #     tab1, tab2 = st.tabs(["Transformadores", "Gestores"])
-    #     with tab1:
-    #         col1, col2 = st.columns(2)
-    #         with col1:
-    #             razonsocial_input2 = st.text_input('Razón social', key='razonsocial_input2')
-    #             nit_input2=st.number_input("CC o NIT", value=None, placeholder=None, min_value=0, step=1, key='nit_input2')
-    #             correo_input2 = st.text_input('Correo electrónico', key='correo_input2')
-    #             telefono_input2 = st.number_input('Teléfono', value=None, placeholder=None, step=1, key='telefono_input2')
-    #             direccion_input2 = st.text_input('Dirección física', key='direccion_input2')
-    #             citieslist = [k for k, v in citiesdict.items() if v == 'Colombia']
-    #             citieslist.sort()
-    #             ciudad_input2 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input2')
-    #             formaparticipacion_input2 = st.text_input('Forma de participación y responsabilidades (*)', key='formaparticipacion_input2')
-    #             numinvolucrados_input2 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input2')
-    #             numacto_input2 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1, key='numacto_input2')
+    with tab2:
+        tab1, tab2 = st.tabs(["Transformadores", "Gestores"])
+        with tab1:
+            col1, col2 = st.columns(2)
+            with col1:
+                razonsocial_input2 = st.text_input('Razón social', key='razonsocial_input2')
+                nit_input2=st.number_input("CC o NIT", value=None, placeholder=None, min_value=0, step=1, key='nit_input2')
+                correo_input2 = st.text_input('Correo electrónico', key='correo_input2')
+                telefono_input2 = st.number_input('Teléfono', value=None, placeholder=None, step=1, key='telefono_input2')
+                direccion_input2 = st.text_input('Dirección física', key='direccion_input2')
+                citieslist = [k for k, v in citiesdict.items() if v == 'Colombia']
+                citieslist.sort()
+                ciudad_input2 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input2')
+                formaparticipacion_input2 = st.text_input('Forma de participación y responsabilidades (*)', key='formaparticipacion_input2')
+                numinvolucrados_input2 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input2')
+                numacto_input2 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1, key='numacto_input2')
 
-    #         with col2:
-    #             ciudades_input2 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input2')
-    #             capacidadtransporte_input2 = st.text_input('Capacidad de transporte y almacenamiento', disabled=True, key='capacidadtransporte_input2')
-    #             logo_input2 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key='logo_input2')
-    #             procesotransformacion_input2 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input2')
-    #             tipoproducto_input2 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input2')
-    #             destinofinal_input2 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input2')
-    #             captransformacion_input2 = st.number_input('Capacidad de transformación (ton/año)', value=None, placeholder=None, min_value=0, step=1, key='captransformacion_input2')
+            with col2:
+                ciudades_input2 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input2')
+                capacidadtransporte_input2 = st.text_input('Capacidad de transporte y almacenamiento', disabled=True, key='capacidadtransporte_input2')
+                logo_input2 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key='logo_input2')
+                procesotransformacion_input2 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input2')
+                tipoproducto_input2 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input2')
+                destinofinal_input2 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input2')
+                captransformacion_input2 = st.number_input('Capacidad de transformación (ton/año)', value=None, placeholder=None, min_value=0, step=1, key='captransformacion_input2')
 
-    #         validcheck=validate_form2(razonsocial_input2,nit_input2,correo_input2,telefono_input2,direccion_input2,ciudad_input2,formaparticipacion_input2,numinvolucrados_input2,numacto_input2,ciudades_input2,logo_input2,procesotransformacion_input2,tipoproducto_input2,destinofinal_input2,captransformacion_input2)  
-    #         def on_click2():
-    #             if os.path.isdir('informes/admin/logos_transformadores/') == False:
-    #                 os.mkdir('informes/admin/logos_transformadores')
-    #             logopath=f'informes/admin/logos_transformadores/{nit_input2}-logo'+f'.{pathlib.Path(logo_input2.name).suffix}'      
-    #             with open(logopath, mode='wb') as w:
-    #                 w.write(logo_input2.getvalue())
+            validcheck=validate_form2(razonsocial_input2,nit_input2,correo_input2,telefono_input2,direccion_input2,ciudad_input2,formaparticipacion_input2,numinvolucrados_input2,numacto_input2,ciudades_input2,logo_input2,procesotransformacion_input2,tipoproducto_input2,destinofinal_input2,captransformacion_input2)  
+            def on_click2():
+                if os.path.isdir('informes/admin/logos_transformadores/') == False:
+                    os.mkdir('informes/admin/logos_transformadores')
+                logopath=f'informes/admin/logos_transformadores/{nit_input2}-logo'+f'.{pathlib.Path(logo_input2.name).suffix}'      
+                with open(logopath, mode='wb') as w:
+                    w.write(logo_input2.getvalue())
 
-    #             with open('informes/admin/notes2.csv', 'a+') as f:    #Append & read mode
-    #                 f.write(f"{razonsocial_input2};{nit_input2};{correo_input2};{telefono_input2};{direccion_input2};{ciudad_input2};{formaparticipacion_input2};{numinvolucrados_input2};{numacto_input2};{ciudades_input2};{'N/A'};{logopath};{procesotransformacion_input2};{tipoproducto_input2};{destinofinal_input2};{captransformacion_input2}\n")
-    #                 st.toast('Registro añadido exitosamente', icon='✅')  
-    #             st.session_state.razonsocial_input2 = ""
-    #             st.session_state.nit_input2 = None 
-    #             st.session_state.correo_input2 = ""
-    #             st.session_state.telefono_input2 = None
-    #             st.session_state.direccion_input2 = ""
-    #             st.session_state.ciudad_input2 = None
-    #             st.session_state.formaparticipacion_input2 = ""
-    #             st.session_state.numinvolucrados_input2 = None
-    #             st.session_state.numacto_input2 = None
-    #             st.session_state.ciudades_input2 = []
-    #             st.session_state.procesotransformacion_input2 = ""
-    #             st.session_state.tipoproducto_input2 = ""
-    #             st.session_state.destinofinal_input2 = None
-    #             st.session_state.captransformacion_input2 = None
+                with open('informes/admin/notes2.csv', 'a+') as f:    #Append & read mode
+                    f.write(f"{razonsocial_input2};{nit_input2};{correo_input2};{telefono_input2};{direccion_input2};{ciudad_input2};{formaparticipacion_input2};{numinvolucrados_input2};{numacto_input2};{ciudades_input2};{'N/A'};{logopath};{procesotransformacion_input2};{tipoproducto_input2};{destinofinal_input2};{captransformacion_input2}\n")
+                    st.toast('Registro añadido exitosamente', icon='✅')  
+                st.session_state.razonsocial_input2 = ""
+                st.session_state.nit_input2 = None 
+                st.session_state.correo_input2 = ""
+                st.session_state.telefono_input2 = None
+                st.session_state.direccion_input2 = ""
+                st.session_state.ciudad_input2 = None
+                st.session_state.formaparticipacion_input2 = ""
+                st.session_state.numinvolucrados_input2 = None
+                st.session_state.numacto_input2 = None
+                st.session_state.ciudades_input2 = []
+                st.session_state.procesotransformacion_input2 = ""
+                st.session_state.tipoproducto_input2 = ""
+                st.session_state.destinofinal_input2 = None
+                st.session_state.captransformacion_input2 = None
 
                     
-    #         if validcheck != True:
-    #             if st.button('Añadir', type='secondary', key='añadirfalse2'):
-    #                 s = ''
-    #                 for i in validcheck:
-    #                     st.toast(i, icon='⚠️')
-    #                 #     s += "-" + i + "  \n"
-    #                 # st.error(s)
+            if validcheck != True:
+                if st.button('Añadir', type='secondary', key='añadirfalse2'):
+                    s = ''
+                    for i in validcheck:
+                        st.toast(i, icon='⚠️')
+                    #     s += "-" + i + "  \n"
+                    # st.error(s)
 
-    #         elif validcheck == True:
-    #             st.button('Añadir', type='secondary', on_click=on_click2, key='añadirtrue2')
+            elif validcheck == True:
+                st.button('Añadir', type='secondary', on_click=on_click2, key='añadirtrue2')
 
-    #         if st.button('Limpiar formato', key='limpiar2', type='tertiary'):
-    #             f = open('informes/admin/notes2.csv', "w+")
-    #             f.close()
-    #             if os.path.isdir('informes/admin/logos_transformadores/'):
-    #                 shutil.rmtree('informes/admin/logos_transformadores/')
-    #             st.toast('Formato limpiado exitosamente', icon='ℹ️')
+            if st.button('Limpiar formato', key='limpiar2', type='tertiary'):
+                f = open('informes/admin/notes2.csv', "w+")
+                f.close()
+                if os.path.isdir('informes/admin/logos_transformadores/'):
+                    shutil.rmtree('informes/admin/logos_transformadores/')
+                st.toast('Formato limpiado exitosamente', icon='ℹ️')
                     
-    #         st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
-    #         "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
-    #         "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
+            st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
+            "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
+            "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
             
-    #         st.info("Previsualización del formato")
+            st.info("Previsualización del formato")
             
-    #         st.dataframe(pd.read_csv("informes/admin/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
+            st.dataframe(pd.read_csv("informes/admin/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
         
-    #     with tab2:
-    #         col1, col2 = st.columns(2)
-    #         with col1:
-    #             razonsocial_input3 = st.text_input('Razón social', key='razonsocial_input3')
-    #             nit_input3=st.number_input("CC o NIT", value=None, placeholder=None, min_value=0, step=1, key='nit_input3')
-    #             correo_input3 = st.text_input('Correo electrónico', key='correo_input3')
-    #             telefono_input3 = st.number_input('Teléfono', value=None, placeholder=None, step=1, key='telefono_input3')
-    #             direccion_input3 = st.text_input('Dirección física', key='direccion_input3')
-    #             citieslist = [k for k, v in citiesdict.items() if v == 'Colombia']
-    #             citieslist.sort()
-    #             ciudad_input3 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input3')
-    #             formaparticipacion_input3 = st.text_input('Forma de participación y responsabilidades (*)', key='formaparticipacion_input3')
-    #             numinvolucrados_input3 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input3')
-    #             numacto_input3 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1, key='numacto_input3')
+        with tab2:
+            col1, col2 = st.columns(2)
+            with col1:
+                razonsocial_input3 = st.text_input('Razón social', key='razonsocial_input3')
+                nit_input3=st.number_input("CC o NIT", value=None, placeholder=None, min_value=0, step=1, key='nit_input3')
+                correo_input3 = st.text_input('Correo electrónico', key='correo_input3')
+                telefono_input3 = st.number_input('Teléfono', value=None, placeholder=None, step=1, key='telefono_input3')
+                direccion_input3 = st.text_input('Dirección física', key='direccion_input3')
+                citieslist = [k for k, v in citiesdict.items() if v == 'Colombia']
+                citieslist.sort()
+                ciudad_input3 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input3')
+                formaparticipacion_input3 = st.text_input('Forma de participación y responsabilidades (*)', key='formaparticipacion_input3')
+                numinvolucrados_input3 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input3')
+                numacto_input3 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1, key='numacto_input3')
 
-    #         with col2:
-    #             ciudades_input3 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input3')
-    #             capacidadtransporte_input3 = st.text_input('Capacidad de transporte y almacenamiento', disabled=False, key='capacidadtransporte_input3')
-    #             logo_input3 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key='logo_input3')
-    #             procesotransformacion_input3 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input3')
-    #             tipoproducto_input3 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input3', disabled=True)
-    #             destinofinal_input3 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input3', disabled=True)
-    #             captransformacion_input3 = st.number_input('Capacidad de transformación (ton/año)', value=None, placeholder=None, min_value=0, step=1, key='captransformacion_input3', disabled=True)
+            with col2:
+                ciudades_input3 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input3')
+                capacidadtransporte_input3 = st.text_input('Capacidad de transporte y almacenamiento', disabled=False, key='capacidadtransporte_input3')
+                logo_input3 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key='logo_input3')
+                procesotransformacion_input3 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input3')
+                tipoproducto_input3 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input3', disabled=True)
+                destinofinal_input3 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input3', disabled=True)
+                captransformacion_input3 = st.number_input('Capacidad de transformación (ton/año)', value=None, placeholder=None, min_value=0, step=1, key='captransformacion_input3', disabled=True)
 
-    #         validcheck=validate_form3(razonsocial_input3,nit_input3,correo_input3,telefono_input3,direccion_input3,ciudad_input3,formaparticipacion_input3,numinvolucrados_input3,numacto_input3,len(ciudades_input3),capacidadtransporte_input3,logo_input3)  
-    #         def on_click3():
-    #             if os.path.isdir('informes/admin/logos_gestores/') == False:
-    #                 os.mkdir('informes/admin/logos_gestores')
-    #             logopath=f'informes/admin/logos_gestores/{nit_input3}-logo'+f'.{pathlib.Path(logo_input3.name).suffix}'      
-    #             with open(logopath, mode='wb') as w:
-    #                 w.write(logo_input3.getvalue())
+            validcheck=validate_form3(razonsocial_input3,nit_input3,correo_input3,telefono_input3,direccion_input3,ciudad_input3,formaparticipacion_input3,numinvolucrados_input3,numacto_input3,len(ciudades_input3),capacidadtransporte_input3,logo_input3)  
+            def on_click3():
+                if os.path.isdir('informes/admin/logos_gestores/') == False:
+                    os.mkdir('informes/admin/logos_gestores')
+                logopath=f'informes/admin/logos_gestores/{nit_input3}-logo'+f'.{pathlib.Path(logo_input3.name).suffix}'      
+                with open(logopath, mode='wb') as w:
+                    w.write(logo_input3.getvalue())
 
-    #             with open('informes/admin/notes3.csv', 'a+') as f:    #Append & read mode
-    #                 f.write(f"{razonsocial_input3};{nit_input3};{correo_input3};{telefono_input3};{direccion_input3};{ciudad_input3};{formaparticipacion_input3};{numinvolucrados_input3};{numacto_input3};{ciudades_input3};{capacidadtransporte_input3};{logopath};{'N/A'};{'N/A'};{'N/A'};{'N/A'}\n")
-    #                 st.toast('Registro añadido exitosamente', icon='✅')  
-    #             st.session_state.razonsocial_input3 = ""
-    #             st.session_state.nit_input3 = None 
-    #             st.session_state.correo_input3 = ""
-    #             st.session_state.telefono_input3 = None
-    #             st.session_state.direccion_input3 = ""
-    #             st.session_state.ciudad_input3 = None
-    #             st.session_state.formaparticipacion_input3 = ""
-    #             st.session_state.numinvolucrados_input3 = None
-    #             st.session_state.numacto_input3 = None
-    #             st.session_state.ciudades_input3 = []
-    #             st.session_state.procesotransformacion_input3 = ""
-    #             st.session_state.capacidadtransporte_input3 = ""
-    #             st.session_state.logo_input3 = None
+                with open('informes/admin/notes3.csv', 'a+') as f:    #Append & read mode
+                    f.write(f"{razonsocial_input3};{nit_input3};{correo_input3};{telefono_input3};{direccion_input3};{ciudad_input3};{formaparticipacion_input3};{numinvolucrados_input3};{numacto_input3};{ciudades_input3};{capacidadtransporte_input3};{logopath};{'N/A'};{'N/A'};{'N/A'};{'N/A'}\n")
+                    st.toast('Registro añadido exitosamente', icon='✅')  
+                st.session_state.razonsocial_input3 = ""
+                st.session_state.nit_input3 = None 
+                st.session_state.correo_input3 = ""
+                st.session_state.telefono_input3 = None
+                st.session_state.direccion_input3 = ""
+                st.session_state.ciudad_input3 = None
+                st.session_state.formaparticipacion_input3 = ""
+                st.session_state.numinvolucrados_input3 = None
+                st.session_state.numacto_input3 = None
+                st.session_state.ciudades_input3 = []
+                st.session_state.procesotransformacion_input3 = ""
+                st.session_state.capacidadtransporte_input3 = ""
+                st.session_state.logo_input3 = None
                 
                     
-    #         if validcheck != True:
-    #             if st.button('Añadir', type='secondary', key='añadirfalse3'):
-    #                 s = ''
-    #                 for i in validcheck:
-    #                     st.toast(i, icon='⚠️')
-    #                 #     s += "-" + i + "  \n"
-    #                 # st.error(s)
+            if validcheck != True:
+                if st.button('Añadir', type='secondary', key='añadirfalse3'):
+                    s = ''
+                    for i in validcheck:
+                        st.toast(i, icon='⚠️')
+                    #     s += "-" + i + "  \n"
+                    # st.error(s)
 
-    #         elif validcheck == True:
-    #             st.button('Añadir', type='secondary', on_click=on_click3, key='añadirtrue3')
+            elif validcheck == True:
+                st.button('Añadir', type='secondary', on_click=on_click3, key='añadirtrue3')
 
-    #         if st.button('Limpiar formato', key='limpiar3', type='tertiary'):
-    #             f = open('informes/admin/notes3.csv', "w+")
-    #             f.close()
-    #             if os.path.isdir('informes/admin/logos_gestores/'):
-    #                 shutil.rmtree('informes/admin/logos_gestores/')
-    #             st.toast('Formato limpiado exitosamente', icon='ℹ️')
+            if st.button('Limpiar formato', key='limpiar3', type='tertiary'):
+                f = open('informes/admin/notes3.csv', "w+")
+                f.close()
+                if os.path.isdir('informes/admin/logos_gestores/'):
+                    shutil.rmtree('informes/admin/logos_gestores/')
+                st.toast('Formato limpiado exitosamente', icon='ℹ️')
                     
-    #         st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
-    #         "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
-    #         "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
+            st.warning("(*) Forma de participación y responsabilidades: orientación de opciones por actor: \n"
+            "- Gestores: Campañas de comunicación, recolección, mecanismos de recolección equivalentes, puntos de recolección, almacenamiento y transporte \n" \
+            "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
             
-    #         st.info("Previsualización del formato")
+            st.info("Previsualización del formato")
             
-    #         st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
-    # # with tab3:
-
-    #     st.write("INVERSIÓN DE RECURSOS ACTORES")
-
-    #     col1, col2 = st.columns(2)
-    #     with col1:
-    #         acciones_input3 = st.text_input('Acciones adelantadas')
-    #         objetivo_input3 = st.text_input('Objetivo')
-    #         estrategia_input3 = st.text_area('Descripción de la estrategia')
-    #         local_input3 = st.text_input('Localización geográfica')
-    #         actores_input3 = st.text_input('Actores beneficiados', help=': gestores, recicladores, empresas transformadoras (personas naturales y/o empresas)')
-    #     with col2:
-    #         tipoinv_input3 = st.selectbox('Tipo de inversión', options=['Dinero','Especie'], index=None, placeholder= 'Seleccione una opción')
-    #         if tipoinv_input3 == 'Dinero':
-    #             tipoinvmod = 'D'
-    #         elif tipoinv_input3 == 'Especie':
-    #             tipoinvmod = 'E'
-    #         else:
-    #             tipoinvmod = ''
-    #         valor_input3 = st.number_input("Valor recursos destinados ($ COP)", value=None, placeholder=None, min_value=0)
-    #         actoresben_input3 = st.number_input("Número de actores beneficiados", value=None, placeholder=None, min_value=0)
-    #         orgben_input3 = st.number_input("Cantidad de organizaciones beneficiadas", value=None, placeholder=None, min_value=0)
-    #         soporte_input3 = st.file_uploader('Registro fotográfico soporte', type=["jpg", "jpeg", "png"])
-
-    #     col3, col4 = st.columns(2)
-    #     with col3:
-    #         col5, col6 = st.columns(2)        
-    #         with col5:
-    #             logopath=''      
-    #             if st.button('Añadir', key='registrar3', type='secondary'):
-    #                 if os.path.isdir('informes/admin/fotos_registro/') == False:
-    #                     os.mkdir('informes/admin/fotos_registro')
-                    
-    #                 fotospath=f'informes/admin/fotos_registro/{actores_input3}-foto'+f'.{pathlib.Path(soporte_input3.name).suffix}'      
-    #                 with open(fotospath, mode='wb') as w:
-    #                     w.write(soporte_input3.getvalue())
-    #                 with open('informes/admin/notes3.csv', 'a+') as f:    #Append & read mode
-    #                     f.write(f"{acciones_input3};{objetivo_input3};{estrategia_input3};{local_input3};{actores_input3};{tipoinvmod};{valor_input3};{actoresben_input3};{orgben_input3};{fotospath}\n")
-    #                 st.success('Registro añadido exitosamente')
-    #         with col6:
-    #             if st.button('Limpiar', key='limpiar3', type='tertiary'):
-    #                 f = open('informes/admin/notes3.csv', "w+")
-    #                 f.close()
-    #                 if os.path.isdir('informes/admin/fotos_registro/'):
-    #                     shutil.rmtree('informes/admin/fotos_registro/')
-    #                 st.info('Formato limpiado exitosamente')
-
-    #     st.info("Previsualización del formato")
-        
-    #     st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Acciones adelantadas","Objetivo","Descripción de la estrategia","Localización geográfica","Actores beneficiados: gestores, recicladores empresas transformadoras (personas naturales y/o empresas)","Tipo de inversión (Dinero=D / Especie=E)","Valor recursos destinados ($ COP)","Número de actores beneficiados","Cantidad de organizaciones beneficiadas","Registro fotográfico soporte"], encoding='latin1'),height=300)
+            st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
 
     with tab4:
         anexo4_input4 = st.file_uploader('Anexo IV. Inscripción de las empresas transformadoras', type='pdf')
@@ -639,5 +608,5 @@ if ss["authentication_status"]:
         #     for file_path in directory.iterdir():
         #          archive.write(file_path)
         st.success('Reporte generado exitosamente')
-# else:
-#     st.switch_page("./pages/Inicio.py")
+else:
+    st.switch_page("./pages/Inicio.py")

@@ -8,6 +8,9 @@ import streamlit_authenticator as stauth
 
 authenticator = stauth.Authenticate('config.yaml')
 
+if 'authapp' not in ss:
+    ss.authapp = authenticator
+
     # st.set_page_config(
     #     page_title="Cuenta",
     #     page_icon="🔐",
