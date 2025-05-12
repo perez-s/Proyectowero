@@ -553,7 +553,7 @@ if ss["authentication_status"]:
             with col2:
                 ciudades_input3 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input3')
                 capacidadtransporte_input3 = st.text_input('Capacidad de transporte y almacenamiento', disabled=False, key='capacidadtransporte_input3')
-                logo_input3 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key=f"uploader2_{st.session_state.uploader_key3}")
+                logo_input3 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key=f"uploader9_{st.session_state.uploader_key3}")
                 procesotransformacion_input3 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input3', disabled=True)
                 tipoproducto_input3 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input3', disabled=True)
                 destinofinal_input3 = st.selectbox("Destino final de producto obtenido", ['fabricante', 'productor', 'distribuidor', 'comercializador'], placeholder='Seleccione una opción', accept_new_options=False, index=None, key='destinofinal_input3', disabled=True)
