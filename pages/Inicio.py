@@ -5,8 +5,23 @@ import time
 from yaml.loader import SafeLoader
 from modules.nav import MenuButtons
 import streamlit_authenticator as stauth
+import base64
+from pathlib import Path
+
+def img_to_bytes(img_path):
+    img_bytes = Path(img_path).read_bytes()
+    encoded = base64.b64encode(img_bytes).decode()
+    return encoded
+
+def img_to_html(img_path):
+    img_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(
+      img_to_bytes(img_path)
+    )
+    return img_html
+
 
 authenticator = stauth.Authenticate('config.yaml')
+
 
 if 'authapp' not in ss:
     ss.authapp = authenticator
@@ -62,25 +77,23 @@ def get_roles():
 css="""
 <style>
     [data-testid="stForm"] {
-        background: #31d3ae;
+        background: #ffffff;
 
     }
 </style>
 """
 st.write(css, unsafe_allow_html=True)
 
+# authenticator.login(location='unrendered', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'}, key='loginhome1')
 
-
-authenticator.login(location='unrendered', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'}, key='loginhome1')
-
-if ss["authentication_status"] is False:
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        st.image('Logo2.png', use_container_width=True)
-elif ss["authentication_status"] is None:
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        st.image('Logo2.png', use_container_width=True)
+# if ss["authentication_status"] is False:
+#     col1, col2, col3 = st.columns(3)
+#     with col2:
+#         st.image('Logo2.png', use_container_width=True)
+# elif ss["authentication_status"] is None:
+#     col1, col2, col3 = st.columns(3)
+#     with col2:
+#         st.image('Logo2.png', use_container_width=True)
 
 authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Username':'Usuario', 'Password':'Contraseña', 'Login':'Ingresar', 'Captcha':'Captcha'}, key='loginhome1')
 
@@ -121,7 +134,8 @@ if ss["authentication_status"]:
         </style>
                 """
             )
-    st.image('Logo1.png')
+    # st.image('Logo1.png')
+    st.markdown(img_to_html('banner4.jpg'), unsafe_allow_html=True)
     st.markdown("""
         # ¡Bienvenido a **Weroapp**!
 
@@ -140,11 +154,59 @@ if ss["authentication_status"]:
         ¡Hagamos que la entrada de datos sea sencilla! 🚀
         """
         )
+    # st.markdown(img_to_html('banner2.jpg'), unsafe_allow_html=True)
 
 
 if ss["authentication_status"] is False:
-    st.error('Usuario/contraseña incorrecta')
+    st.toast('Usuario/contraseña incorrecta', icon="🚫")
+    def set_bg_hack(main_bg):
+        '''
+        A function to unpack an image from root folder and set as bg.
+    
+        Returns
+        -------
+        The background.
+        '''
+        # set bg name
+        main_bg_ext = "png"
+            
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
+                background-size: cover
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    set_bg_hack('homepage1.jpg')
+
 elif ss["authentication_status"] is None:
-    st.warning('Por favor ingresa usuario y contraseña')
+    st.toast('Por favor ingresa usuario y contraseña', icon="⚠️")
+    def set_bg_hack(main_bg):
+        '''
+        A function to unpack an image from root folder and set as bg.
+    
+        Returns
+        -------
+        The background.
+        '''
+        # set bg name
+        main_bg_ext = "png"
+            
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
+                background-size: cover
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    set_bg_hack('homepage1.jpg')
 
 
