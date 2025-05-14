@@ -262,7 +262,7 @@ if ss["authentication_status"]:
             errors.append('Número de personas involucradas: ' + num_inv_error)
             
         # Validate administrative act number
-        num_acto_error = validate_none(num_acto)
+        num_acto_error = validate_empty(num_acto)
         if num_acto_error:
             errors.append('Número de acto administrativo: ' + num_acto_error)
             
@@ -345,7 +345,7 @@ if ss["authentication_status"]:
             errors.append('Número de personas involucradas: ' + num_inv_error)
             
         # Validate administrative act number
-        num_acto_error = validate_none(num_acto)
+        num_acto_error = validate_empty(num_acto)
         if num_acto_error:
             errors.append('Número de acto administrativo: ' + num_acto_error)
             
@@ -353,7 +353,7 @@ if ss["authentication_status"]:
         if ciudades == 0:
             errors.append('Ciudades de cobertura: Debe seleccionar al menos una ciudad')
 
-        cap_transporte_error = validate_empty(cap_transporte)
+        cap_transporte_error = validate_none(cap_transporte)
         if cap_transporte_error:
             errors.append('Capacidad de transporte: ' + cap_transporte_error)
 
@@ -368,7 +368,7 @@ if ss["authentication_status"]:
 
         return True
 
-    def validate_form4(anexo4, anexo5, anexo6, anexo7, anexo8, anexo9, anexo10, metasypro):
+    def validate_form4(anexo4, anexo5, anexo6, anexo7, anexo8, anexo9, anexo10, metasypro, anexo11):
         errors = []
 
         # Validate NIT
@@ -404,6 +404,10 @@ if ss["authentication_status"]:
         if metasypro_error:
             errors.append('Anexo 8: ' + metasypro_error)
         
+        anexo11_error = validate_none(anexo11)
+        if anexo11_error:
+            errors.append('Anexo 9: ' + anexo11_error)
+
         if errors:
             return errors
 
@@ -416,7 +420,7 @@ if ss["authentication_status"]:
     with tab1:
         col1, col2 = st.columns(2)
         with col1:
-            nombre_input = st.text_input('Nombre',key='nombre_input_key')
+            nombre_input = st.text_input('Nombre de la empresa',key='nombre_input_key')
             nacionalidad_input = st.selectbox('Nacionalidad', countrieslist, index=None, placeholder='Seleccione un país',accept_new_options=False, key='nacionalidad_input_key')
             nit_input=st.number_input("NIT", value=None, placeholder=None, key='nit_input_key', step=1)
             correo_input = st.text_input('Correo electrónico', key='correo_input_key')
@@ -483,13 +487,13 @@ if ss["authentication_status"]:
                 citieslist = [k for k, v in citiesdict.items() if v == 'Colombia']
                 citieslist.sort()
                 ciudad_input2 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input2')
-                formaparticipacion_input2 = st.text_input('Forma de participación y responsabilidades (*)', key='formaparticipacion_input2')
-                numinvolucrados_input2 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input2')
-                numacto_input2 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1, key='numacto_input2')
+                formaparticipacion_input2 = st.text_area('Forma de participación y responsabilidades (*)', key='formaparticipacion_input2')
+                numacto_input2 = st.text_area('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', key='numacto_input2')
 
             with col2:
-                ciudades_input2 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input2')
-                capacidadtransporte_input2 = st.text_input('Capacidad de transporte y almacenamiento', disabled=True, key='capacidadtransporte_input2')
+                numinvolucrados_input2 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input2')
+                ciudades_input2 = st.multiselect("Ciudades donde tiene cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input2')
+                capacidadtransporte_input2 = st.number_input('Capacidad de transporte y almacenamiento (ton/año)', value=None, placeholder=None, min_value=0, step=1, disabled=True, key='capacidadtransporte_input2')
                 logo_input2 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key=f"uploader_{st.session_state.uploader_key2}")
                 procesotransformacion_input2 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input2')
                 tipoproducto_input2 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input2')
@@ -515,7 +519,7 @@ if ss["authentication_status"]:
                 st.session_state.ciudad_input2 = None
                 st.session_state.formaparticipacion_input2 = ""
                 st.session_state.numinvolucrados_input2 = None
-                st.session_state.numacto_input2 = None
+                st.session_state.numacto_input2 = ""
                 st.session_state.ciudades_input2 = []
                 st.session_state.procesotransformacion_input2 = ""
                 st.session_state.tipoproducto_input2 = ""
@@ -548,7 +552,7 @@ if ss["authentication_status"]:
                         
             st.info("Previsualización del formato")
             
-            st.dataframe(pd.read_csv("informes/admin/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
+            st.dataframe(pd.read_csv("informes/admin/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
         
         with tab2:
             col1, col2 = st.columns(2)
@@ -561,13 +565,13 @@ if ss["authentication_status"]:
                 citieslist = [k for k, v in citiesdict.items() if v == 'Colombia']
                 citieslist.sort()
                 ciudad_input3 = st.selectbox("Ciudad", citieslist, index=None, placeholder='Seleccione una ciudad', accept_new_options=False, key='ciudad_input3')
-                formaparticipacion_input3 = st.text_input('Forma de participación y responsabilidades (*)', key='formaparticipacion_input3')
-                numinvolucrados_input3 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input3')
-                numacto_input3 = st.number_input('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', value=None, placeholder=None, min_value=0, step=1, key='numacto_input3')
+                formaparticipacion_input3 = st.text_area('Forma de participación y responsabilidades (*)', key='formaparticipacion_input3')
+                numacto_input3 = st.text_area('Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique', key='numacto_input3')
 
             with col2:
-                ciudades_input3 = st.multiselect("Ciudades donde tienes cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input3')
-                capacidadtransporte_input3 = st.text_input('Capacidad de transporte y almacenamiento', disabled=False, key='capacidadtransporte_input3')
+                numinvolucrados_input3 = st.number_input('Número de personas involucradas', value=None, placeholder=None, min_value=0, help='(personas asociadas y/o con vinculación laboral)', step=1, key='numinvolucrados_input3')
+                ciudades_input3 = st.multiselect("Ciudades donde tiene cobertura normalmente en el año", citieslist, placeholder='Seleccione una ciudad o más', accept_new_options=False, key='ciudades_input3')
+                capacidadtransporte_input3 = st.number_input('Capacidad de transporte y almacenamiento (ton/año)', value=None, placeholder=None, min_value=0, step=1, disabled=False, key='capacidadtransporte_input3')
                 logo_input3 = st.file_uploader('Logo en alta resolución', type=["jpg", "jpeg", "png"], key=f"uploader9_{st.session_state.uploader_key3}")
                 procesotransformacion_input3 = st.text_input('Proceso de transformación de la ET', key='procesotransformacion_input3', disabled=True)
                 tipoproducto_input3 = st.text_input('Tipo de producto obtenido', key='tipoproducto_input3', disabled=True)
@@ -593,9 +597,9 @@ if ss["authentication_status"]:
                 st.session_state.ciudad_input3 = None
                 st.session_state.formaparticipacion_input3 = ""
                 st.session_state.numinvolucrados_input3 = None
-                st.session_state.numacto_input3 = None
+                st.session_state.numacto_input3 = ""
                 st.session_state.ciudades_input3 = []
-                st.session_state.capacidadtransporte_input3 = ""
+                st.session_state.capacidadtransporte_input3 = None
                 st.session_state.uploader_key3 += 1
                 
                     
@@ -631,7 +635,7 @@ if ss["authentication_status"]:
 
             st.info("Previsualización del formato")
             
-            st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tienes cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
+            st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
 
     with tab4:
         col1, col2 = st.columns(2)
@@ -641,13 +645,13 @@ if ss["authentication_status"]:
             anexo5_input4 = st.file_uploader('Anexo 2: Copia de los soportes anexados a la solicitud de inscripción de las empresas transformadoras ante la autoridad ambiental competente de su jurisdicción', type='pdf', key=f"uploader2_{st.session_state.uploader_key4}")
             anexo6_input4 = st.file_uploader('Anexo 3: Copia de la respuesta de la CAR al radicado de inscripción como empresa transformadora', type='pdf', key=f"uploader3_{st.session_state.uploader_key4}")
             anexo7_input4 = st.file_uploader('Anexo 4: Tabla I-a. Certificación de toneladas aprovechadas y contenido mínimo de material reciclado', type='pdf', key=f"uploader4_{st.session_state.uploader_key4}")
-        with col2:
             anexo8_input4 = st.file_uploader('Anexo 5: Tabla I-b. Certificación de toneladas recolectadas', type='pdf', key=f"uploader5_{st.session_state.uploader_key4}")
+        with col2:
             anexo9_input4 = st.file_uploader('Anexo 6: Copia de las facturas mediante las cuales se realizó la venta a la empresa transformadora, que demuestre la transacción comercial', type='pdf', key=f"uploader6_{st.session_state.uploader_key4}")
             anexo10_input4 = st.file_uploader('Anexo 7: Informe mecanismos equivalentes gestores - ASOCAÑA', type='pdf', key=f"uploader7_{st.session_state.uploader_key4}")
             metasypro_input4 = st.file_uploader('Anexo 8: Informe de avance en el cumplimiento de metas y proyección', type='pdf', key=f"uploader8_{st.session_state.uploader_key4}")
-
-        validcheck=validate_form4(anexo4_input4,anexo5_input4,anexo6_input4,anexo7_input4,anexo8_input4,anexo9_input4,anexo10_input4,metasypro_input4)
+            anexo11_input4 = st.file_uploader('Anexo 9: Inversión de recursos en actores firmado', type='pdf', key=f"uploader90_{st.session_state.uploader_key4}")
+        validcheck=validate_form4(anexo4_input4,anexo5_input4,anexo6_input4,anexo7_input4,anexo8_input4,anexo9_input4,anexo10_input4,metasypro_input4, anexo11_input4)
 
         def on_click4():
             if os.path.isdir('informes/admin/anexos/') == False:
@@ -685,6 +689,10 @@ if ss["authentication_status"]:
             with open(anexospath, mode='wb') as w:
                         w.write(metasypro_input4.getvalue())
             
+            anexospath=f'informes/admin/anexos/anexo9'+f'.{pathlib.Path(anexo11_input4.name).suffix}'      
+            with open(anexospath, mode='wb') as w:
+                        w.write(anexo11_input4.getvalue())
+   
             st.session_state.uploader_key4 += 1
 
             st.toast('Anexos añadidos exitosamente', icon='✅')

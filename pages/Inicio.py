@@ -19,7 +19,49 @@ def img_to_html(img_path):
     )
     return img_html
 
+def set_bg_hack(main_bg):
+    '''
+    A function to unpack an image from root folder and set as bg.
 
+    Returns
+    -------
+    The background.
+    '''
+    # set bg name
+    main_bg_ext = "png"
+        
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-color: #00A887;
+            background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
+            background-size: cover;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
+st.markdown(
+    """
+        <style>
+                .stAppHeader {
+                    background-color: rgba(255, 255, 255, 0.0);  /* Transparent background */
+                    visibility: visible;  /* Ensure the header is visible */
+                }
+
+            .block-container {
+                    padding-top: 1rem;
+                    padding-bottom: 0rem;
+                    padding-left: 5rem;
+                    padding-right: 5rem;
+                }
+        </style>
+        """,
+    unsafe_allow_html=True,
+)
+  
 authenticator = stauth.Authenticate('config.yaml')
 
 
@@ -99,12 +141,31 @@ authenticator.login(location='main', fields={'Form name':'Iniciar sesión', 'Use
 
 if ss["authentication_status"]:
     with st.sidebar:
-        st.write(f'Benvenido/a *{ss["name"]}*i')
+        st.write(f'Benvenido/a *{ss["name"]}*')
     MenuButtons(get_roles())
     authenticator.logout(button_name='Cerrar sesión', location='sidebar', use_container_width=True, key='logouthome')
     time.sleep(0.5)
     st.toast('Sesion iniciada exitosamente!', icon='✅')
     time.sleep(0.5)
+    st.markdown(
+        """
+            <style>
+                    .stAppHeader {
+                        background-color: rgba(255, 255, 255, 0.0);  /* Transparent background */
+                        visibility: visible;  /* Ensure the header is visible */
+                    }
+
+                .block-container {
+                        padding-top: 1rem;
+                        padding-bottom: 0rem;
+                        padding-left: 5rem;
+                        padding-right: 5rem;
+                    }
+            </style>
+            """,
+        unsafe_allow_html=True,
+)
+    
     st.markdown("""
         <style>
             section[data-testid="stSidebar"][aria-expanded="true"]{
@@ -117,11 +178,11 @@ if ss["authentication_status"]:
     logo2 = 'Logo2.png'
     logo3 = 'Logo3.png'
     logo4 = 'Logo4.png'
-    st.logo(logo4, icon_image=logo2, size='large')
+    st.logo(logo2, icon_image=logo4, size='large')
     st.markdown("""
         <style>
             [data-testid=stSidebar] {
-                background-color: #31d3ae;
+                background-color: #ffffff;
             }
         </style>
         """, unsafe_allow_html=True
@@ -129,84 +190,41 @@ if ss["authentication_status"]:
     st.html("""
         <style>
             [alt=Logo] {
-            height: 3.5rem;
+            height: 4rem;
             }
         </style>
                 """
             )
     # st.image('Logo1.png')
-    st.markdown(img_to_html('banner4.jpg'), unsafe_allow_html=True)
-    st.markdown("""
-        # ¡Bienvenido a **Weroapp**!
+    set_bg_hack('homepage2.jpg')
+    # st.markdown(img_to_html('homepage2.jpg'), unsafe_allow_html=True)
+    # st.markdown("""
+    #     # ¡Bienvenido a **Weroapp**!
 
-        ¡Hola y bienvenido a **Weroapp**, la forma más sencilla de ingresar, gestionar y enviar tus datos!
+    #     ¡Hola y bienvenido a **Weroapp**, la forma más sencilla de ingresar, gestionar y enviar tus datos!
 
-        - **Formularios Intuitivos**    
-        - **Guardado y Borradores**  
-        - **Exportación de Datos**  
+    #     - **Formularios Intuitivos**    
+    #     - **Guardado y Borradores**  
+    #     - **Exportación de Datos**  
 
-        ---
+    #     ---
 
-        ## ¿Necesitas ayuda?
+    #     ## ¿Necesitas ayuda?
 
-        - Escribe a nuestro equipo de soporte: [soporte@Wero.com.co](mailto:soporte@Wero.com.co).
+    #     - Escribe a nuestro equipo de soporte: [soporte@Wero.com.co](mailto:soporte@Wero.com.co).
 
-        ¡Hagamos que la entrada de datos sea sencilla! 🚀
-        """
-        )
+    #     ¡Hagamos que la entrada de datos sea sencilla! 🚀
+    #     """
+    #     )
     # st.markdown(img_to_html('banner2.jpg'), unsafe_allow_html=True)
 
 
 if ss["authentication_status"] is False:
     st.toast('Usuario/contraseña incorrecta', icon="🚫")
-    def set_bg_hack(main_bg):
-        '''
-        A function to unpack an image from root folder and set as bg.
-    
-        Returns
-        -------
-        The background.
-        '''
-        # set bg name
-        main_bg_ext = "png"
-            
-        st.markdown(
-            f"""
-            <style>
-            .stApp {{
-                background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
-                background-size: cover
-            }}
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
     set_bg_hack('homepage1.jpg')
 
 elif ss["authentication_status"] is None:
     st.toast('Por favor ingresa usuario y contraseña', icon="⚠️")
-    def set_bg_hack(main_bg):
-        '''
-        A function to unpack an image from root folder and set as bg.
-    
-        Returns
-        -------
-        The background.
-        '''
-        # set bg name
-        main_bg_ext = "png"
-            
-        st.markdown(
-            f"""
-            <style>
-            .stApp {{
-                background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
-                background-size: cover
-            }}
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
     set_bg_hack('homepage1.jpg')
 
 
