@@ -13,6 +13,7 @@ import yaml
 from yaml.loader import SafeLoader
 import base64
 from pathlib import Path
+from datetime import datetime
 
 
 def img_to_bytes(img_path):
@@ -25,6 +26,8 @@ def img_to_html(img_path):
       img_to_bytes(img_path)
     )
     return img_html
+
+
 
 st.markdown(img_to_html('banner1.jpg'), unsafe_allow_html=True)
 
@@ -52,6 +55,8 @@ if "uploader_key3" not in st.session_state:
 if "uploader_key4" not in st.session_state:
     st.session_state.uploader_key4 = 0
 
+if "uploader_key30" not in st.session_state:
+    st.session_state.uploader_key30 = 0
 
 
 if 'authentication_status' not in ss:
@@ -175,6 +180,140 @@ if ss["authentication_status"]:
         if element == '':
             return "Ingresa un valor valido."
         return None
+
+    # First define specific validation functions
+    def validate_index(value):
+        """Validate index is a whole number"""
+        try:
+            if pd.isna(value):
+                return False
+            return float(value).is_integer() and float(value) > 0
+        except:
+            return False
+
+    def validate_date(value):
+        """Validate date format dd/mm/yyyy"""
+        try:
+            if pd.isna(value):
+                return False
+            if isinstance(value, datetime):
+                return True
+            if isinstance(value, str):
+                datetime.strptime(value, '%d/%m/%Y')
+                return True
+            return False
+        except:
+            return False
+
+    def validate_invoice(value):
+        """Validate invoice number allows alphanumeric and symbols"""
+        try:
+            if pd.isna(value):
+                return False
+            return len(str(value).strip()) > 0
+        except:
+            return False
+
+    # List of valid materials
+    VALID_MATERIALS = [
+        'Papel', 'Cartón', 'Vidrio', 'Metales Ferrosos', 
+        'Metales No Ferrosos', 'Multimaterial', 'Plástico PET', 
+        'Plástico PEAD', 'Plástico PVC', 'Plástico PEBD', 
+        'Plástico PP', 'Plástico PS', 'Otros plásticos'
+    ]
+
+    def validate_material(value):
+        """Validate material type against allowed list"""
+        try:
+            if pd.isna(value):
+                return False
+            return str(value).strip() in VALID_MATERIALS
+        except:
+            return False
+
+    VALID_CONDITIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'NO APLICA']
+
+    def validate_conditions(value):
+        """Validate conditions against allowed list"""
+        try:
+            if pd.isna(value):
+                return False
+            return str(value).strip() in VALID_CONDITIONS
+        except:
+            return False
+
+    def validate_quantity(value):
+        """Validate quantity is a positive number"""
+        try:
+            if pd.isna(value):
+                return False
+            return float(value) > 0
+        except:
+            return False
+
+    def validate_company_name(value):
+        """Validate company name format"""
+        try:
+            if pd.isna(value):
+                return False
+            # Remove leading/trailing spaces and check for multiple spaces
+            cleaned = ' '.join(str(value).strip().split())
+            # Check if it contains at least one letter
+            has_letter = any(c.isalpha() for c in cleaned)
+            return has_letter and '  ' not in cleaned
+        except:
+            return False
+
+    def validate_municipality(value):
+        """Validate municipality name (alphabetic only, non-empty)"""
+        try:
+            if pd.isna(value):
+                return False
+            # Remove spaces and check if remaining chars are letters
+            cleaned = str(value).strip()
+            return bool(cleaned) and all(c.isalpha() or c.isspace() for c in cleaned)
+        except:
+            return False
+
+    def validate_municipality_category(value):
+        """Validate municipality category (1-6 or ESP)"""
+        VALID_CATEGORIES = [1, 2, 3, 4, 5, 6, 'ESP']
+        try:
+            if pd.isna(value):
+                return False
+            # Handle both string and numeric inputs
+            if isinstance(value, str):
+                return value.strip().upper() == 'ESP'
+            return int(value) in VALID_CATEGORIES
+        except:
+            return False
+
+    def validate_mechanism_count(value):
+        """Validate mechanism count (positive integer)"""
+        try:
+            if pd.isna(value):
+                return False
+            num = float(value)
+            return num.is_integer() and num > 0
+        except:
+            return False
+
+    def validate_collected_material(value):
+        """Validate collected material amount (positive number)"""
+        try:
+            if pd.isna(value):
+                return False
+            return float(value) > 0
+        except:
+            return False
+
+    # Create validators dictionary
+    municipal_validators = {
+        'Municipio': validate_municipality,
+        'Categoria del municipio': validate_municipality_category,
+        'Número de mecanismos equivalentes': validate_mechanism_count,
+        'Cantidad total de material recolectado (ton)': validate_collected_material
+    }   
 
     def validate_form1(a, b, c, d, e, f, g, h):
         errors = []
@@ -412,10 +551,137 @@ if ss["authentication_status"]:
             return errors
 
         return True
+    
+    def validate_excel_data(file_path, validators=None):
+        """
+        Reads and validates Excel data starting from row 5
+        
+        Args:
+            file_path (str): Path to Excel file 
+            validators (dict): Dictionary of column names and validation functions
+            
+        Returns:
+            tuple: (is_valid (bool), errors (list), validated_data (pd.DataFrame))
+        """
+        try:
+            # Read Excel file starting from row 5 (index 4)
+            df = pd.read_excel(file_path, header=3)
+            errors = []
+            
+            # Check if dataframe is empty
+            if df.empty:
+                errors.append("Excel file is empty or has no data after row 5")
+                return False, errors, None
+    
+            # Apply validators to each column
+            if validators:
+                for col, validator_func in validators.items():
+                    if col in df.columns:
+                        # Track invalid rows for this column
+                        invalid_rows = []
+                        # Validate each cell in the column
+                        for index, value in df[col].items():
+                            try:
+                                if pd.isna(value) or not validator_func(value):
+                                    # Add 5 to index to match Excel row numbers (1-based + 4 skipped rows)
+                                    invalid_rows.append(index + 1)
+                            except Exception as e:
+                                invalid_rows.append(index + 1)
+                                
+                        if invalid_rows:
+                            errors.append(f"Valores no validos en la columna '{col}' registro: {invalid_rows}")
+                    else:
+                        errors.append(f"Columna '{col}' no encontrada en el archivo Excel")
+    
+            return len(errors) == 0, errors, df
+    
+        except Exception as e:
+            return False, [f"Error leyendo el archivo Excel  \n  {str(e)}"], None
+   
+    def validate_x_or_empty(value):
+        """Validate that a value is either empty/NaN or 'x'"""
+        try:
+            if pd.isna(value):
+                return True
+            return str(value).strip().lower() == 'x'
+        except:
+            return False
+
+    def validate_row_has_x(row, columns_to_check):
+        """Validate that at least one 'x' exists in the specified columns of the row"""
+        try:
+            return any(str(row[col]).strip().lower() == 'x' for col in columns_to_check if not pd.isna(row[col]))
+        except:
+            return False
+    # Columns that need x or empty validation
+    x_columns = [
+        'Papel', 'Cartón', 1, 2, 3, 
+        'Rígido', 'Flexible', 'Vidrio',
+        'Ferrosos', 'No ferrosos',
+        'Multimateriales 1', 'Multimateriales n'
+    ]  
+# Modify your validate_excel_data function to include row validation
+    def validate_excel_data2(file_path, validators=None):
+        """
+        Reads and validates Excel data starting from row 5
+        
+        Args:
+            file_path (str): Path to Excel file 
+            validators (dict): Dictionary of column names and validation functions
+            
+        Returns:
+            tuple: (is_valid (bool), errors (list), validated_data (pd.DataFrame))
+        """
+        try:
+            # Read Excel file starting from row 5 (index 4)
+            df = pd.read_excel(file_path, header=6)
+            print(df.columns)
+            errors = []
+            
+            # Check if dataframe is empty
+            if df.empty:
+                errors.append("Excel file is empty or has no data after row 5")
+                return False, errors, None
+
+            # Apply validators to each column
+            if validators:
+                for col, validator_func in validators.items():
+                    if col in df.columns:
+                        # Track invalid rows for this column
+                        invalid_rows = []
+                        
+                        # Validate each cell in the column
+                        for index, value in df[col].items():
+                            if not validator_func(value):
+                                # Add 5 to index to match Excel row numbers
+                                invalid_rows.append(index + 1)
+                                
+                        if invalid_rows:
+                            errors.append(f"Invalid values in column '{col}' at rows: {invalid_rows}")
+                    else:
+                        errors.append(f"Required column '{col}' not found in Excel file")
+
+            # Validate that each row has at least one 'x'
+            available_x_columns = [col for col in x_columns if col in df.columns]
+            for index, row in df.iterrows():
+                if not validate_row_has_x(row, available_x_columns):
+                    errors.append(f"Row {index + 1} must have at least one 'x' marked")
+
+            return len(errors) == 0, errors, df
+
+        except Exception as e:
+            return False, [f"Error reading Excel file: {str(e)}"], None   
+   
+   
+    # Example usage with validators:
+
+    # Create the validators dictionary
+
+    
     ####################################################################################################
 
 
-    tab1, tab2, tab4 = st.tabs(["Operadores del Plan", "Actores", 'Soportes'])
+    tab1, tab2, tab3, tab4 = st.tabs(["Operadores del Plan", "Actores", "Reporte gestores", 'Soportes'])
 
     with tab1:
         col1, col2 = st.columns(2)
@@ -456,9 +722,10 @@ if ss["authentication_status"]:
 
         if validcheck != True:
             if st.button('Añadir', type='secondary', key='añadirfalse'):
-                s = ''
+               
                 for i in validcheck:
                     st.toast(i, icon='⚠️')
+                # s = ''
                 #     s += "-" + i + "  \n"
                 # st.error(s)
 
@@ -637,6 +904,103 @@ if ss["authentication_status"]:
             
             st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
 
+    with tab3:
+        col1, col2 = st.columns(2)
+        with col1:
+            st.header("1. Información transaccional")
+            with open("formatos/INFORMACION_TRANSACCIONAL.xlsx", "rb") as file:
+                st.download_button(
+                    label="Descargar formato",
+                    data=file,
+                    file_name="INFORMACION_TRANSACCIONAL.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key="download_button1",
+                    use_container_width=True
+                )
+            excel1_input3 = st.file_uploader('Cargar información transaccional', type=["xlsx"], key=f"uploader10_{st.session_state.uploader_key30}")
+            if st.button('Validar', type='secondary', key='validar1'):
+                validators = {
+                    '#': validate_index,
+                    'FECHA DE TRANSACCIÓN': validate_date,
+                    'Nº FACTURA': validate_invoice,
+                    'TIPO DE MATERIAL': validate_material,
+                    'CONDICIONES ESPECIFICAS': validate_conditions,
+                    'CANTIDAD (kg)': validate_quantity,
+                    'Nombre de la empresa transformadora': validate_company_name
+                }
+                # Read and validate Excel file
+                is_valid, errors, data = validate_excel_data(
+                    excel1_input3,
+                    validators=validators
+                )
+
+                if not is_valid:
+                    st.error("Errores de validación encontrados:")
+                    s = ''
+                    for error in errors:
+                        s += "- " + error + "  \n"
+                    st.error(s)
+                else:
+                    st.toast("Archivo Excel validado y guardado correctamente!", icon="✅")
+                    if os.path.isdir('informes/admin/excel_validados/') == False:
+                        os.mkdir('informes/admin/excel_validados')
+                    anexospath=f'informes/admin/excel_validados/informacion_transaccional'+f'{pathlib.Path(excel1_input3.name).suffix}'      
+                    with open(anexospath, mode='wb') as w:
+                        w.write(excel1_input3.getvalue())
+        
+        with col2:
+            st.header("2. Reporte de cobertura")
+            with open("formatos/REPORTE_COBERTURA_GESTORES.xlsx", "rb") as file:
+                st.download_button(
+                    label="Descargar formato",
+                    data=file,
+                    file_name="REPORTE_COBERTURA_GESTORES.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    key="download_button2",
+                    use_container_width=True
+                )
+            excel2_input3 = st.file_uploader('Cargar reporte de cobertura', type=["xlsx"], key=f"uploader11_{st.session_state.uploader_key30}")
+            if st.button('Validar', type='secondary', key='validar2'):
+                validators = {
+                    'Municipio': validate_municipality,
+                    'Categoria del municipio': validate_municipality_category,
+                    'Número de mecanismos equivalentes': validate_mechanism_count,
+                    'Cantidad total de material recolectado (ton) ': validate_collected_material,
+                }
+                
+                additional_validators = {col: validate_x_or_empty for col in x_columns}
+                validators.update(additional_validators)
+
+                # Read and validate Excel file
+                is_valid, errors, data = validate_excel_data2(
+                    excel2_input3,
+                    validators=validators
+                )
+
+                if not is_valid:
+                    st.error("Errores de validación encontrados:")
+                    s = ''
+                    for error in errors:
+                        s += "- " + error + "  \n"
+                    st.error(s)
+                else:
+                    st.toast("Archivo Excel validado y guardado correctamente!", icon="✅")
+                    if os.path.isdir('informes/admin/excel_validados/') == False:
+                        os.mkdir('informes/admin/excel_validados')
+                    anexospath=f'informes/admin/excel_validados/reporte_cobertura'+f'{pathlib.Path(excel2_input3.name).suffix}'      
+                    with open(anexospath, mode='wb') as w:
+                        w.write(excel2_input3.getvalue())
+
+        df = pd.read_excel('formatos\REPORTE_COBERTURA_GESTORES.xlsx', header=6)
+        print(df.columns)      
+        
+        col1, col2, col3 = st.columns(3)
+        with col2:
+            if st.button('Limpiar archivos', type='tertiary', key='limpiar30', use_container_width=True):
+                if os.path.isdir('informes/admin/excel_validados/'):
+                    shutil.rmtree('informes/admin/excel_validados/')
+                st.toast('Reporte de gestores limpiado exitosamente', icon='ℹ️')
+
     with tab4:
         col1, col2 = st.columns(2)
 
@@ -730,9 +1094,10 @@ if ss["authentication_status"]:
             f.close()
             f = open('informes/admin/notes3.csv', "w+")
             f.close()
-            st.rerun()
             if os.path.isdir('informes/admin/anexos/'):
                 shutil.rmtree('informes/admin/anexos/')
+            st.rerun()
+
 
             st.success(f'Reporte {timestr} generado exitosamente')
     if "vote" not in st.session_state:
