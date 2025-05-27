@@ -10,6 +10,9 @@ def HomeNav():
 def DataEntryAdmin():
     st.sidebar.page_link("pages/Formatos.py", label="Formatos", icon='📚')
 
+def ReportesUsers():
+    st.sidebar.page_link("pages/Reportes.py", label="Reportes", icon='📊')
+
 
 def MenuButtons(user_roles=None):
     if user_roles is None:
@@ -36,5 +39,5 @@ def MenuButtons(user_roles=None):
             DataEntryAdmin()
 
         if ss.username in users:
-            DataEntryAdmin()            
+            ReportesUsers()            
         # (2) users with user and admin roles have access to page 2.     

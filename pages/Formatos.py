@@ -2,7 +2,6 @@ import streamlit as st
 from streamlit import session_state as ss
 import pandas as pd
 from modules.nav import MenuButtons
-# from pages.Inicio import get_roles, authenticator
 import geonamescache
 import pathlib
 import shutil
@@ -180,10 +179,10 @@ if ss["authentication_status"]:
         if element == '':
             return "Ingresa un valor valido."
         return None
-
-    # First define specific validation functions
+        # First define specific validation functions
+    
     def validate_index(value):
-        """Validate index is a whole number"""
+        """Valida que el índice sea un número entero positivo"""
         try:
             if pd.isna(value):
                 return False
@@ -191,22 +190,22 @@ if ss["authentication_status"]:
         except:
             return False
 
-    def validate_date(value):
-        """Validate date format dd/mm/yyyy"""
+    def validate_date_2025(value):
+        """Valida que la fecha esté en formato dd/mm/yyyy y sea del año 2025"""
         try:
             if pd.isna(value):
                 return False
             if isinstance(value, datetime):
-                return True
+                return value.year == 2025
             if isinstance(value, str):
-                datetime.strptime(value, '%d/%m/%Y')
-                return True
+                dt = datetime.strptime(value, '%d/%m/%Y')
+                return dt.year == 2025
             return False
         except:
             return False
 
     def validate_invoice(value):
-        """Validate invoice number allows alphanumeric and symbols"""
+        """Valida que el número de factura sea alfanumérico y permita símbolos"""
         try:
             if pd.isna(value):
                 return False
@@ -214,7 +213,7 @@ if ss["authentication_status"]:
         except:
             return False
 
-    # List of valid materials
+    # Lista de materiales válidos
     VALID_MATERIALS = [
         'Papel', 'Cartón', 'Vidrio', 'Metales Ferrosos', 
         'Metales No Ferrosos', 'Multimaterial', 'Plástico PET', 
@@ -223,7 +222,7 @@ if ss["authentication_status"]:
     ]
 
     def validate_material(value):
-        """Validate material type against allowed list"""
+        """Valida el tipo de material contra la lista permitida"""
         try:
             if pd.isna(value):
                 return False
@@ -234,7 +233,7 @@ if ss["authentication_status"]:
     VALID_CONDITIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'NO APLICA']
 
     def validate_conditions(value):
-        """Validate conditions against allowed list"""
+        """Valida las condiciones contra la lista permitida"""
         try:
             if pd.isna(value):
                 return False
@@ -243,7 +242,7 @@ if ss["authentication_status"]:
             return False
 
     def validate_quantity(value):
-        """Validate quantity is a positive number"""
+        """Valida que la cantidad sea un número positivo"""
         try:
             if pd.isna(value):
                 return False
@@ -252,36 +251,36 @@ if ss["authentication_status"]:
             return False
 
     def validate_company_name(value):
-        """Validate company name format"""
+        """Valida el formato del nombre de la empresa"""
         try:
             if pd.isna(value):
                 return False
-            # Remove leading/trailing spaces and check for multiple spaces
+            # Elimina espacios al inicio/final y verifica espacios múltiples
             cleaned = ' '.join(str(value).strip().split())
-            # Check if it contains at least one letter
+            # Verifica que contenga al menos una letra
             has_letter = any(c.isalpha() for c in cleaned)
             return has_letter and '  ' not in cleaned
         except:
             return False
 
     def validate_municipality(value):
-        """Validate municipality name (alphabetic only, non-empty)"""
+        """Valida el nombre del municipio (solo letras, no vacío)"""
         try:
             if pd.isna(value):
                 return False
-            # Remove spaces and check if remaining chars are letters
+            # Elimina espacios y verifica que los caracteres sean letras
             cleaned = str(value).strip()
             return bool(cleaned) and all(c.isalpha() or c.isspace() for c in cleaned)
         except:
             return False
 
     def validate_municipality_category(value):
-        """Validate municipality category (1-6 or ESP)"""
+        """Valida la categoría del municipio (1-6 o ESP)"""
         VALID_CATEGORIES = [1, 2, 3, 4, 5, 6, 'ESP']
         try:
             if pd.isna(value):
                 return False
-            # Handle both string and numeric inputs
+            # Permite entradas tipo string o numéricas
             if isinstance(value, str):
                 return value.strip().upper() == 'ESP'
             return int(value) in VALID_CATEGORIES
@@ -289,7 +288,7 @@ if ss["authentication_status"]:
             return False
 
     def validate_mechanism_count(value):
-        """Validate mechanism count (positive integer)"""
+        """Valida el número de mecanismos equivalentes (entero positivo)"""
         try:
             if pd.isna(value):
                 return False
@@ -299,7 +298,7 @@ if ss["authentication_status"]:
             return False
 
     def validate_collected_material(value):
-        """Validate collected material amount (positive number)"""
+        """Valida la cantidad total de material recolectado (número positivo)"""
         try:
             if pd.isna(value):
                 return False
@@ -640,7 +639,7 @@ if ss["authentication_status"]:
             
             # Check if dataframe is empty
             if df.empty:
-                errors.append("Excel file is empty or has no data after row 5")
+                errors.append("El archivo Excel está vacío o no contiene datos después de la fila 5")
                 return False, errors, None
 
             # Apply validators to each column
@@ -657,20 +656,20 @@ if ss["authentication_status"]:
                                 invalid_rows.append(index + 1)
                                 
                         if invalid_rows:
-                            errors.append(f"Invalid values in column '{col}' at rows: {invalid_rows}")
+                            errors.append(f"Valores no válidos en la columna '{col}' en las filas: {invalid_rows}")
                     else:
-                        errors.append(f"Required column '{col}' not found in Excel file")
+                        errors.append(f"Columna requerida '{col}' no encontrada en el archivo Excel")
 
             # Validate that each row has at least one 'x'
             available_x_columns = [col for col in x_columns if col in df.columns]
             for index, row in df.iterrows():
                 if not validate_row_has_x(row, available_x_columns):
-                    errors.append(f"Row {index + 1} must have at least one 'x' marked")
+                    errors.append(f"La fila {index + 1} debe tener al menos una columna marcada con 'x'")
 
             return len(errors) == 0, errors, df
 
         except Exception as e:
-            return False, [f"Error reading Excel file: {str(e)}"], None   
+             False, [f"Error leyendo el archivo Excel: {str(e)}"], None   
    
    
     # Example usage with validators:
@@ -738,8 +737,23 @@ if ss["authentication_status"]:
 
 
         st.info("Previsualización del formato")
+
+        result1 = pd.read_csv("informes/admin/notes.csv",names=["Nombre","Nacionalidad","NIT","Correo","Telefono","Dirección","Ciudad","Observaciones"],encoding='latin1')
+        result1['Eliminar?'] = False
+        result2 = st.data_editor(result1,height=300, column_order=("Eliminar?","Nombre","Nacionalidad","NIT","Correo","Telefono","Dirección","Ciudad","Observaciones"), disabled=('Nombre', 'Nacionalidad', 'NIT', 'Correo', 'Telefono', 'Dirección', 'Ciudad', 'Observaciones'), hide_index=True)
+        selected_rows = result2.index[result2['Eliminar?'] == True].tolist()
         
-        st.dataframe(pd.read_csv("informes/admin/notes.csv",names=["Nombre","Nacionalidad","NIT","Correo","Telefono","Dirección","Ciudad","Observaciones"],encoding='latin1'),height=300)
+        if selected_rows:
+            if st.button('Eliminar filas seleccionadas', type='tertiary', key='eliminar'):
+                # Remove selected rows from the DataFrame and save back to CSV
+                result1 = result1.drop(selected_rows)
+                result1 = result1.drop(columns=['Eliminar?'])
+                result1.to_csv("informes/admin/notes.csv", index=False, header=False, encoding='latin1')
+                st.toast('Filas eliminadas exitosamente', icon='🗑️')
+                st.rerun()
+                
+
+
 
     with tab2:
         tab1, tab2 = st.tabs(["Transformadores", "Gestores"])
@@ -818,9 +832,21 @@ if ss["authentication_status"]:
             "- Empresas Transformadoras: Tipo de aprovechamiento, tipo de material de envases y empaques, campañas de comunicación, inversión en infraestructura y/o ecodiseño")
                         
             st.info("Previsualización del formato")
+
+            result1 = pd.read_csv("informes/admin/notes2.csv",names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1')
+            result1['Eliminar?'] = False
+            result2 = st.data_editor(result1,height=300, column_order=("Eliminar?","Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"), disabled=("Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"), hide_index=True)
+            selected_rows = result2.index[result2['Eliminar?'] == True].tolist()
             
-            st.dataframe(pd.read_csv("informes/admin/notes2.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
-        
+            if selected_rows:
+                if st.button('Eliminar filas seleccionadas', type='tertiary', key='eliminar'):
+                    # Remove selected rows from the DataFrame and save back to CSV
+                    result1 = result1.drop(selected_rows)
+                    result1 = result1.drop(columns=['Eliminar?'])
+                    result1.to_csv("informes/admin/notes2.csv", index=False, header=False, encoding='latin1')
+                    st.toast('Filas eliminadas exitosamente', icon='🗑️')
+                    st.rerun()
+                    
         with tab2:
             col1, col2 = st.columns(2)
             with col1:
@@ -902,7 +928,19 @@ if ss["authentication_status"]:
 
             st.info("Previsualización del formato")
             
-            st.dataframe(pd.read_csv("informes/admin/notes3.csv",delimiter=';',names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1'),height=300)
+            result11 = pd.read_csv("informes/admin/notes3.csv",names=["Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"],encoding='latin1')
+            result11['Eliminar?'] = False
+            result22 = st.data_editor(result11,height=300, column_order=("Eliminar?","Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"), disabled=("Razón social","CC o NIT","Correo electrónico","Teléfono","Dirección física","Ciudad","Forma de participación y responsabilidades","Número de personas involucradas (personas asociadas y/o con vinculación laboral)","Número de acto administrativo de las autorizaciones ambientales, permisos, concesiones cuando aplique","Ciudades donde tiene cobertura normalmente en el año","Capacidad de transporte y almacenamiento","Logo en alta resolución","Proceso de transformación de la ET","Tipo de producto obtenido","Destino final de producto obtenido","Capacidad de transformación (ton/año)"), hide_index=True, key='data_editor_notes3')
+            selected_rows = result22.index[result22['Eliminar?'] == True].tolist()
+            
+            if selected_rows:
+                if st.button('Eliminar filas seleccionadas', type='tertiary', key='eliminar'):
+                    # Remove selected rows from the DataFrame and save back to CSV
+                    result11 = result11.drop(selected_rows)
+                    result11 = result11.drop(columns=['Eliminar?'])
+                    result11.to_csv("informes/admin/notes3.csv", index=False, header=False, encoding='latin1')
+                    st.toast('Filas eliminadas exitosamente', icon='🗑️')
+                    st.rerun()
 
     with tab3:
         col1, col2 = st.columns(2)

@@ -1,22 +1,22 @@
 cookie:
   expiry_days: 30
   key: somesignaturekey
-  name: randomstring123123123
+  name: cookie_name
 credentials:
   usernames:
     acoplasticos:
-      email: jsmith@gmail.com
+      email: acoplasticos@gmail.com
+      failed_login_attempts: 1
+      logged_in: false
+      name: Acoplasticos
+      password: $2b$12$gfV/ny1JwjoJUd1GjXv06euklMLyqYbg3sDl9U3/lEesDro3XRGHe
+      role: admin
+    wero:
+      email: wero@gmail.com
       failed_login_attempts: 0
       logged_in: true
-      name: Acoplasticos
-      password: $2b$12$FmYYVxFoQsVXWQeEjPO3uuirXhrXMq5w6wjopNgQNUTOpOFX6p6y2
-      role: admin
-    rbriggs:
-      email: rbriggs@gmail.com
-      failed_login_attempts: 0
-      logged_in: false
-      name: Rebecca Briggs
-      password: $2b$12$uON60sh.2IdIk4cka2YILuRo4kQai.pU8McK/owmmJ.QawK85GrdK
+      name: Wero
+      password: $2b$12$JtGhOwtOMttoDISYQwy9zenCwU16Z7vdpti39463IK/.uP75HeVWm
       role: user
 preauthorized:
   emails:
