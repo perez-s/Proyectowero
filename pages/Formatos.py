@@ -959,7 +959,7 @@ if ss["authentication_status"]:
             if st.button('Validar', type='secondary', key='validar1'):
                 validators = {
                     '#': validate_index,
-                    'FECHA DE TRANSACCIÓN': validate_date,
+                    'FECHA DE TRANSACCIÓN': validate_date_2025,
                     'Nº FACTURA': validate_invoice,
                     'TIPO DE MATERIAL': validate_material,
                     'CONDICIONES ESPECIFICAS': validate_conditions,
