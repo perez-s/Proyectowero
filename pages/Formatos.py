@@ -1029,8 +1029,7 @@ if ss["authentication_status"]:
                     with open(anexospath, mode='wb') as w:
                         w.write(excel2_input3.getvalue())
 
-        df = pd.read_excel('formatos/REPORTE_COBERTURA_GESTORES.xlsx', header=6)
-        print(df.columns)      
+        df = pd.read_excel('formatos/REPORTE_COBERTURA_GESTORES.xlsx', header=6)      
         
         col1, col2, col3 = st.columns(3)
         with col2:
