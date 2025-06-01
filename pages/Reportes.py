@@ -128,11 +128,9 @@ if ss["authentication_status"]:
                 return pd.concat(consolidated_data, ignore_index=True)
 
         data_to_download = consolidate_informacion_transaccional_all(folder_path)
-
-        st.write(data_to_download)
         
         st.download_button(
-            label="Descargar consolidado Excel",
+            label="Descargar información transaccional consolidada",
             data=data_to_download.to_csv(index=False).encode('latin1'),
             file_name="consolidado_informacion_transaccional.csv",
             mime="text/csv"
