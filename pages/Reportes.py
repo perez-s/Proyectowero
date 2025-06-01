@@ -9,7 +9,6 @@ from datetime import datetime
 from zipfile import ZipFile
 import io
 
-
 CONFIG_FILENAME = 'config.yaml'
 def get_roles():
     """Gets user roles based on config file."""
@@ -113,7 +112,33 @@ if ss["authentication_status"]:
         result2 = pagination.data_editor(data=pages[current_page - 1], use_container_width=True, hide_index=False, disabled=('Reporte', 'Fecha'))
         selected_reports = result2[result2['Descargar'] == True]['Reporte'].tolist()
 
+        def consolidate_informacion_transaccional_all(folder_path):
+            consolidated_data = []
+            for filename in os.listdir(folder_path):
+                if filename.lower().endswith('.zip'):
+                    file_path = os.path.join(folder_path, filename)
+                    if os.path.isfile(file_path):
+                        with ZipFile(file_path, 'r') as zipf:
+                            for name in zipf.namelist():
+                                if 'excel_validados/informacion_transaccional.xlsx' in name:
+                                    with zipf.open(name) as xlsx_file:
+                                        df = pd.read_excel(xlsx_file, skiprows=3)  # Skip first 4 rows
+                                        consolidated_data.append(df)
+            if consolidated_data:
+                return pd.concat(consolidated_data, ignore_index=True)
+
+        data_to_download = consolidate_informacion_transaccional_all(folder_path)
+
+        st.write(data_to_download)
         
+        st.download_button(
+            label="Descargar consolidado Excel",
+            data=data_to_download.to_csv(index=False).encode('latin1'),
+            file_name="consolidado_informacion_transaccional.csv",
+            mime="text/csv"
+        )
+
+
     else:
         selected_reports = []
         st.error("No hay reportes disponibles.")
@@ -133,6 +158,21 @@ if ss["authentication_status"]:
             file_name="reportes_seleccionados.zip",
             mime="application/zip"
         )
+
+    st.divider()
+
+    year_selector = st.selectbox(
+        "Seleccionar año a reportar",
+        options=[str(year) for year in range(2020, datetime.now().year + 1)],
+        index=datetime.now().year - 2020
+    )
+
+    if st.button("Guardar año seleccionado"):
+        with open('year.txt', 'w') as f:
+            f.write(year_selector)
+        st.toast(f"Año {year_selector} guardado correctamente.", icon="✅")
+
+
 
 else:
     st.switch_page("./pages/Inicio.py")

@@ -6,8 +6,8 @@ credentials:
   usernames:
     acoplasticos:
       email: acoplasticos@gmail.com
-      failed_login_attempts: 1
-      logged_in: false
+      failed_login_attempts: 0
+      logged_in: true
       name: Acoplasticos
       password: $2b$12$gfV/ny1JwjoJUd1GjXv06euklMLyqYbg3sDl9U3/lEesDro3XRGHe
       role: admin

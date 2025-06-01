@@ -189,17 +189,20 @@ if ss["authentication_status"]:
             return float(value).is_integer() and float(value) > 0
         except:
             return False
-
-    def validate_date_2025(value):
-        """Valida que la fecha esté en formato dd/mm/yyyy y sea del año 2025"""
+    
+    def validate_date_yeartxt(value):
+        """Valida que la fecha esté en formato dd/mm/yyyy y sea del año especificado en year.txt"""
         try:
+            # Leer el año desde year.txt
+            with open('year.txt', 'r') as f:
+                valid_year = int(f.read().strip())
             if pd.isna(value):
                 return False
             if isinstance(value, datetime):
-                return value.year == 2025
+                return value.year == valid_year
             if isinstance(value, str):
                 dt = datetime.strptime(value, '%d/%m/%Y')
-                return dt.year == 2025
+                return dt.year == valid_year
             return False
         except:
             return False
@@ -945,7 +948,7 @@ if ss["authentication_status"]:
     with tab3:
         col1, col2 = st.columns(2)
         with col1:
-            st.header("1. Información transaccional")
+            st.header("1. Información transaccional*")
             with open("formatos/INFORMACION_TRANSACCIONAL.xlsx", "rb") as file:
                 st.download_button(
                     label="Descargar formato",
@@ -959,7 +962,7 @@ if ss["authentication_status"]:
             if st.button('Validar', type='secondary', key='validar1'):
                 validators = {
                     '#': validate_index,
-                    'FECHA DE TRANSACCIÓN': validate_date_2025,
+                    'FECHA DE TRANSACCIÓN': validate_date_yeartxt,
                     'Nº FACTURA': validate_invoice,
                     'TIPO DE MATERIAL': validate_material,
                     'CONDICIONES ESPECIFICAS': validate_conditions,
@@ -985,7 +988,9 @@ if ss["authentication_status"]:
                     anexospath=f'informes/admin/excel_validados/informacion_transaccional'+f'{pathlib.Path(excel1_input3.name).suffix}'      
                     with open(anexospath, mode='wb') as w:
                         w.write(excel1_input3.getvalue())
-        
+            with open('year.txt', 'r') as f:
+                valid_year = int(f.read().strip())
+            st.info("*Año valido para FECHA DE TRANSACCIÓN: " + str(valid_year))
         with col2:
             st.header("2. Reporte de cobertura")
             with open("formatos/REPORTE_COBERTURA_GESTORES.xlsx", "rb") as file:
@@ -1133,6 +1138,12 @@ if ss["authentication_status"]:
             f.close()
             if os.path.isdir('informes/admin/anexos/'):
                 shutil.rmtree('informes/admin/anexos/')
+            if os.path.isdir('informes/admin/excel_validados/'):
+                shutil.rmtree('informes/admin/excel_validados/')
+            if os.path.isdir('informes/admin/logos_transformadores/'):
+                shutil.rmtree('informes/admin/logos_transformadores/')
+            if os.path.isdir('informes/admin/logos_gestores/'):
+                shutil.rmtree('informes/admin/logos_gestores/')
             st.rerun()
 
 
