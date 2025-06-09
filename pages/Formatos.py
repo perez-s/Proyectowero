@@ -1,3 +1,5 @@
+import random
+import string
 import streamlit as st
 from streamlit import session_state as ss
 import pandas as pd
@@ -1129,7 +1131,8 @@ if ss["authentication_status"]:
         st.write('Recuerda que una vez enviado no podrás editar el formato.')
         if st.button('Enviar', key='enviar', type='primary'):
             timestr = time.strftime("%Y-%m-%d")
-            shutil.make_archive(f'informes/reporte_{timestr}', 'zip', './informes/admin')
+            reportstr = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+            shutil.make_archive(f'informes/reporte_{timestr}_{reportstr}', 'zip', './informes/admin')
             f = open('informes/admin/notes.csv', "w+")
             f.close()
             f = open('informes/admin/notes2.csv', "w+")
@@ -1147,7 +1150,7 @@ if ss["authentication_status"]:
             st.rerun()
 
 
-            st.success(f'Reporte {timestr} generado exitosamente')
+            st.success(f'Reporte {timestr}_{reportstr} generado exitosamente')
     if "vote" not in st.session_state:
         if st.button("Enviar reporte", type='primary', key='enviar_reporte'):
             dialog()
