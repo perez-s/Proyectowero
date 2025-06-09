@@ -129,12 +129,13 @@ if ss["authentication_status"]:
 
         data_to_download = consolidate_informacion_transaccional_all(folder_path)
         
-        st.download_button(
-            label="Descargar información transaccional consolidada",
-            data=data_to_download.to_csv(index=False).encode('latin1'),
-            file_name="consolidado_informacion_transaccional.csv",
-            mime="text/csv"
-        )
+        if data_to_download is not None and not data_to_download.empty:
+            st.download_button(
+                label="Descargar información transaccional consolidada",
+                data=data_to_download.to_csv(index=False).encode('latin1'),
+                file_name="consolidado_informacion_transaccional.csv",
+                mime="text/csv"
+            )
 
 
     else:
