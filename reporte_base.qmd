@@ -170,8 +170,7 @@ knitr::knit_expand(text = '
   bottom: 0.5pt,
 ))
 
-#set text(8pt, font: "Montserrat")
-
+#set text(8pt)
 
 #show table.cell.where(y: 0): set text(weight: "bold")
 
@@ -255,7 +254,7 @@ knitr::knit_expand(text =
   top: if y == 1 { 0.5pt } else if y == 0 { 0.5pt } else if y == 2 { 0.5pt } else { 0pt },
   bottom: 0.5pt,
 ))
-#set text(8pt, font: "Montserrat")
+#set text(8pt)
 #show table.cell.where(y: 1): set text(weight: "bold")
 #show table.cell.where(y: 0): set text(weight: "bold")
 #show table.cell.where(y: 1): set text(weight: "bold")
@@ -339,10 +338,10 @@ secondReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -383,7 +382,7 @@ knitr::knit_expand(text =
   top: if y == 1 { 0.5pt } else if y == 0 { 0.5pt } else if y == 2 { 0.5pt } else { 0pt },
   bottom: 0.5pt,
 ))
-#set text(8pt, font: "Montserrat")
+#set text(8pt)
 #show table.cell.where(y: 1): set text(weight: "bold")
 #show table.cell.where(y: 0): set text(weight: "bold")
 #show table.cell.where(y: 1): set text(weight: "bold")
@@ -462,10 +461,10 @@ thirdReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -528,7 +527,7 @@ knitr::knit_expand(text =
 #show table.cell.where(y: 1): set text(weight: "regular")
 #show table.cell.where(y: 1): set text(weight: "regular")
 
-#set text(10pt, font: "Montserrat")
+#set text(10pt)
 
 #show table.cell.where(y: 0): set text(weight: "bold")
 #show table.cell.where(y: 1): set text(weight: "bold")
@@ -545,7 +544,7 @@ En la @fig-1, se presenta gráficamente la composición general de los residuos 
 #| output: asis
 knitr::knit_expand(text = 
 '
-#set text(8pt, font: "Montserrat")
+#set text(8pt)
 '
 ) |> knitr::raw_block("typst")
 ```
@@ -592,7 +591,7 @@ newdata2 <- data[data$Fuente == params$client,]
 newdata2 <- subset(newdata2, Etapa == "Caracterización")
 newdata2 <- subset(newdata2, Fecha >= start_date & Fecha <= end_date)
 
-# month_levels <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
+# month_levels <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic.")
 
 newdata3 <- newdata2 |>
   mutate(
@@ -657,10 +656,10 @@ newdata3 |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -692,7 +691,7 @@ Listado de materiales recibidos como materiales aprovechables
 #| output: asis
 knitr::knit_expand(text = 
 '
-#set text(10pt, font: "Montserrat")
+#set text(10pt)
 '
 ) |> knitr::raw_block("typst")
 ```
