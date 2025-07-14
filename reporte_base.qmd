@@ -137,7 +137,7 @@ for (i in 1:length(ciudadesList)) {
 # string to list number of franchises per city
 largestring <- ""
 for (i in 1:length(ciudadesList)) {
-  if (i == length(ciudadesList)) {
+  if (i == length(ciudadesList) & length(ciudadesList) > 1) {
     largestring <- paste(largestring,sprintf(" y %s en la ciudad de %s",numPuntos[i+1],ciudadesList[i]), sep = "")
   } 
   
@@ -155,7 +155,7 @@ largestring <- str_squish(largestring)
 
 # Información General
 
-A continuación, en las siguientes tablas se presentan los datos registrados con corte al **`{r} enddate`** del proyecto de circularidad de residuos en los **`{r} numPuntosDeVenta`** puntos de venta de **`{r} params$client`** seleccionados para el piloto, **`{r} largestring`**. Estos resultados son gracias al esfuerzo conjunto entre Coca Cola y **`{r} params$client`** para promover acciones encaminadas a la circularidad, la sostenibilidad y lograr Un Mundo Sin Residuos.
+A continuación, en las siguientes tablas se presentan los datos registrados con corte al `{r} enddate` del proyecto de circularidad de residuos en los `{r} numPuntosDeVenta` puntos de venta de `{r} params$client` seleccionados para el piloto, `{r} largestring`. Estos resultados son gracias al esfuerzo conjunto entre Coca Cola y `{r} params$client` para promover acciones encaminadas a la circularidad, la sostenibilidad y lograr Un Mundo Sin Residuos.
 
 ```{r}
 #| echo: false
@@ -537,7 +537,7 @@ knitr::knit_expand(text =
 ) |> knitr::raw_block("typst")
 ```
 
-De acuerdo con la @tbl-1, @tbl-2 y @tbl-3, se puede concluir que en cada servicio se está haciendo una recolección promedio de **`{r} largestring2`**.
+De acuerdo con la @tbl-1, @tbl-2 y @tbl-3, se puede concluir que en cada servicio se está haciendo una recolección promedio de `{r} largestring2`.
 En la @fig-1, se presenta gráficamente la composición general de los residuos sólidos aprovechables que se han entregado a la fecha de corte de este informe en las sucursales participantes del piloto; mientras tanto, en la @tbl-4, se presenta la cantidad de residuos por material en kilogramos.
 
 ```{r} 
@@ -580,7 +580,7 @@ ggplot(newdata3, aes(x= Porcentaje, y= reorder(Categoría, Porcentaje), fill=Cat
 ```
 
 Composición de los residuos aprovechables por tipo de material 
-(total: **`{r} format(round(sum(newdata33$Peso)),2)`** kg)
+(total: `{r} format(round(sum(newdata33$Peso)),2)` kg)
 
 ::: 
 
