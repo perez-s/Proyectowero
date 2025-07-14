@@ -62,7 +62,7 @@
   
   // Set the body font.
   set table(
-    set text(8pt, font: "Montserrat")
+    text(8pt, font: "Montserrat")
   )
   set text(10pt, font: "Montserrat")
   set figure.caption(
