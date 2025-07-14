@@ -20,7 +20,7 @@ engine: knitr
 ```{r}
 #| echo: false
 #| include: false
-Sys.setlocale("LC_TI6", "Spanish")
+Sys.setlocale("LC_TIME", "Spanish")
 library(dplyr)
 library(tidyr)
 library(ggplot2)
