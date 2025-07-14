@@ -234,7 +234,7 @@ firstReportTable |>
     Promedio = "Kg/recolección"
   )|>
   tab_options(
-    table.font.size = pt(8),
+    table.font.size = px(8),
     table.font.names = "Montserrat"  # You can also use `pt(10)` or `pct(80)`
   )
 
