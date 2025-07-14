@@ -7,9 +7,9 @@ format: PrettyTypst-typst
 editor: 
   render-on-save: true  
 params:
-  client: "Qbano"
+  client: "Mr. Bross"
   startdate: "2024-07-09"
-  enddate: "2025-07-09"
+  enddate: "2025-07-14"
   nodoc: "1"
   rec: ""
   obs: ""
@@ -27,7 +27,7 @@ library(ggplot2)
 library(ggrepel)
 library(tidyverse)
 library(viridis)
-# library(paletteer)
+library(paletteer)
 library(ggradar)
 library(data.table)
 library(janitor)
@@ -35,8 +35,14 @@ library(lubridate)
 library(gt)
 library(forcats)
 
+# install.packages("dplyr")
+# install.packages("tidyr")
+# install.packages("ggplot2")
+# install.packages("ggrepel")
+# install.packages("tidyverse")
+# install.packages("viridis")
 # install.packages("paletter")
-# install.packages("ggradar")
+# install.packages("devtools")
 # install.packages("data.table")
 # install.packages("janitor")
 # install.packages("lubridate")
@@ -319,13 +325,13 @@ secondReportTable |>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
     fmt = ~ fmt_number(.,decimals = 0,use_seps = FALSE)
-  )|>
-  tab_style(
-    style = cell_borders(
-      sides = c("top", "bottom"),
-      weight = px(0.66)
-    ),
-    locations = cells_grand_summary()
+  # )|>
+  # tab_style(
+  #   style = cell_borders(
+  #     sides = c("top", "bottom"),
+  #     weight = px(0.66)
+  #   ),
+  #   locations = cells_grand_summary()
   )|>
   tab_style(
     style = cell_borders(
@@ -336,7 +342,7 @@ secondReportTable |>
       cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      # cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -349,14 +355,14 @@ secondReportTable |>
     ),
     locations = list(
       cells_column_labels(columns = ends_with("Total")),
-      cells_body(columns = ends_with("Total")),
-      cells_grand_summary(columns = ends_with("Total"))
+      cells_body(columns = ends_with("Total"))
+      # cells_grand_summary(columns = ends_with("Total"))
       )
-  )|>
-  tab_style(
-    locations = cells_grand_summary(),
-    style = cell_fill(color = "#ebebeb")
-  )
+  # )|>
+  # tab_style(
+  #   locations = cells_grand_summary(),
+  #   style = cell_fill(color = "#ebebeb")
+  # )
 
 ``` 
 
@@ -442,13 +448,13 @@ thirdReportTable |>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
     fmt = ~ fmt_number(.,decimals = 0,use_seps = FALSE)
-  )|>
-  tab_style(
-    style = cell_borders(
-      sides = c("top", "bottom"),
-      weight = px(0.66)
-    ),
-    locations = cells_grand_summary()
+  # )|>
+  # tab_style(
+  #   style = cell_borders(
+  #     sides = c("top", "bottom"),
+  #     weight = px(0.66)
+  #   ),
+  #   locations = cells_grand_summary()
   )|>
   tab_style(
     style = cell_borders(
@@ -459,7 +465,7 @@ thirdReportTable |>
       cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      # cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -472,14 +478,14 @@ thirdReportTable |>
     ),
     locations = list(
       cells_column_labels(columns = ends_with("Total")),
-      cells_body(columns = ends_with("Total")),
-      cells_grand_summary(columns = ends_with("Total"))
+      cells_body(columns = ends_with("Total"))
+      # cells_grand_summary(columns = ends_with("Total"))
       )
-  )|>
-  tab_style(
-    locations = cells_grand_summary(),
-    style = cell_fill(color = "#ebebeb")
-  )
+  # )|>
+  # tab_style(
+  #   locations = cells_grand_summary(),
+  #   style = cell_fill(color = "#ebebeb")
+  # )
 
 ``` 
 
@@ -647,7 +653,7 @@ newdata3 |>
       cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      # cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -660,14 +666,14 @@ newdata3 |>
     ),
     locations = list(
       cells_column_labels(columns = ends_with("Total")),
-      cells_body(columns = ends_with("Total")),
-      cells_grand_summary(columns = ends_with("Total"))
+      cells_body(columns = ends_with("Total"))
+      # cells_grand_summary(columns = ends_with("Total"))
       )
   )|>
-  tab_style(
-    locations = cells_grand_summary(),
-    style = cell_fill(color = "#ebebeb")
-  )
+  # tab_style(
+  #   locations = cells_grand_summary(),
+  #   style = cell_fill(color = "#ebebeb")
+  # )
 
 ```
 
