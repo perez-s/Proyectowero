@@ -341,7 +341,7 @@ secondReportTable |>
     locations = list(
       cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
-      cells_column_spanners(spanners = ends_with(last_4_digits[1]))
+      cells_column_spanners(spanners = ends_with(last_4_digits[1])),
       # cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
@@ -358,7 +358,7 @@ secondReportTable |>
       cells_body(columns = ends_with("Total"))
       # cells_grand_summary(columns = ends_with("Total"))
       )
-  # )|>
+  )
   # tab_style(
   #   locations = cells_grand_summary(),
   #   style = cell_fill(color = "#ebebeb")
@@ -481,7 +481,7 @@ thirdReportTable |>
       cells_body(columns = ends_with("Total"))
       # cells_grand_summary(columns = ends_with("Total"))
       )
-  # )|>
+  )
   # tab_style(
   #   locations = cells_grand_summary(),
   #   style = cell_fill(color = "#ebebeb")
@@ -669,7 +669,7 @@ newdata3 |>
       cells_body(columns = ends_with("Total"))
       # cells_grand_summary(columns = ends_with("Total"))
       )
-  )|>
+  )
   # tab_style(
   #   locations = cells_grand_summary(),
   #   style = cell_fill(color = "#ebebeb")
