@@ -311,7 +311,7 @@ secondReportTable |>
     columns = ends_with(last_4_digits[2])
   )|>
   cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 6), .)  # Remove last 4 characters from column names
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   fmt_number(
     decimals = 0,
@@ -434,7 +434,7 @@ thirdReportTable |>
     columns = ends_with(last_4_digits[2])
   )|> 
   cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 6), .)  # Remove last 4 characters from column names
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   fmt_number(
     decimals = 0,
@@ -629,7 +629,7 @@ newdata3 |>
     columns = ends_with(last_4_digits[2])
   )|>
   cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 6), .)  # Remove last 4 characters from column names
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   fmt_number(
     decimals = 0,
