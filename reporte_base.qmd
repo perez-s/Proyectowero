@@ -7,7 +7,7 @@ format: PrettyTypst-typst
 editor: 
   render-on-save: true  
 params:
-  client: "Mr. Bross"
+  client: "Qbano"
   startdate: "2024-07-09"
   enddate: "2025-07-14"
   nodoc: "1"
@@ -338,10 +338,10 @@ secondReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -461,10 +461,10 @@ thirdReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -502,7 +502,7 @@ for (i in 1:length(ciudadesList)) {
   numRecolecciones <- nrow(newdataFor)
   totalKg <- sum(newdataFor$kg, na.rm = TRUE)
   kgPerRecoleccion <- totalKg/numRecolecciones
-  if (i == length(ciudadesList)) {
+  if (i == length(ciudadesList) & length(ciudadesList) > 1) {
     largestring2 <- paste(largestring2,sprintf(" y %s kg de residuos en la ciudad de %s",format(round(kgPerRecoleccion,2), nsmall=2),ciudadesList[i]), sep = "")
   }
 
@@ -591,7 +591,7 @@ newdata2 <- data[data$Fuente == params$client,]
 newdata2 <- subset(newdata2, Etapa == "Caracterización")
 newdata2 <- subset(newdata2, Fecha >= start_date & Fecha <= end_date)
 
-# month_levels <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
+# month_levels <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic.")
 
 newdata3 <- newdata2 |>
   mutate(
@@ -656,10 +656,10 @@ newdata3 |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
