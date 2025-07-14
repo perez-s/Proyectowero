@@ -7,7 +7,7 @@ credentials:
     acoplasticos:
       email: acoplasticos@gmail.com
       failed_login_attempts: 0
-      logged_in: true
+      logged_in: false
       name: Acoplasticos
       password: $2b$12$gfV/ny1JwjoJUd1GjXv06euklMLyqYbg3sDl9U3/lEesDro3XRGHe
       role: admin
@@ -18,6 +18,13 @@ credentials:
       name: Wero
       password: $2b$12$JtGhOwtOMttoDISYQwy9zenCwU16Z7vdpti39463IK/.uP75HeVWm
       role: user
+    wero2:
+      email: wero@gmail.com
+      failed_login_attempts: 0
+      logged_in: false
+      name: Wero2
+      password: $2b$12$8qqQb84ylw2SyEpNtjHum.hEZoiPXdx/w8YxX0bjeh0IVFuix6JpO
+      role: user2
 preauthorized:
   emails:
   - melsby@gmail.com

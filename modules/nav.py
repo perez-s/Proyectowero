@@ -11,7 +11,13 @@ def DataEntryAdmin():
     st.sidebar.page_link("pages/Formatos.py", label="Formatos", icon='📚')
 
 def ReportesUsers():
-    st.sidebar.page_link("pages/Reportes.py", label="Reportes", icon='📊')
+    st.sidebar.page_link("pages/Reportes.py", label="Reportes Acoplasticos", icon='📊')
+
+def GeneradorUsers():
+    st.sidebar.page_link("pages/Generador.py", label="Generador Coca-Cola", icon='🤖')
+
+def MacroUsers():
+    st.sidebar.page_link("pages/Macro.py", label="Macro Coca-Cola", icon='📈')
 
 
 def MenuButtons(user_roles=None):
@@ -32,6 +38,7 @@ def MenuButtons(user_roles=None):
         # In a user roles get all the usernames with admin role.
         admins = [k for k, v in user_roles.items() if v == 'admin']
         users = [k for k, v in user_roles.items() if v == 'user']
+        users2 = [k for k, v in user_roles.items() if v == 'user2']
 
         HomeNav()
         # Show page 1 if the username that logged in is an admin.
@@ -39,5 +46,9 @@ def MenuButtons(user_roles=None):
             DataEntryAdmin()
 
         if ss.username in users:
-            ReportesUsers()            
+            ReportesUsers()
+            GeneradorUsers()
+
+        if ss.username in users2:
+            MacroUsers()       
         # (2) users with user and admin roles have access to page 2.     
