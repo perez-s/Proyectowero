@@ -754,7 +754,7 @@ knitr::knit_expand(text =
 newdata3 |>
   gt(
     rowname_col = "Sucursal",
-    # row_group.sep = getOption("gt.row_group.sep", " - ")
+    groupname_col = "Ciudad"
   )|>
   tab_stubhead(
     label = "Sucursal"
@@ -782,6 +782,36 @@ newdata3 |>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
     fmt = ~ fmt_number(.,decimals = 0,use_seps = FALSE)
+  )|>
+  tab_style(
+  style = cell_borders(
+    sides = c("top", "bottom"),
+    weight = px(0.66)
+  ),
+  locations = cells_grand_summary()
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("right"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_column_spanners(spanners = ends_with(last_4_digits[1])),
+      cells_stub(rows = everything()),
+      cells_stub_grand_summary(rows = everything()),
+      cells_stubhead()
+      )
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("left"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_column_labels(columns = ends_with("Total")),
+      cells_body(columns = ends_with("Total")),
+      cells_grand_summary(columns = ends_with("Total"))
+      )
   )|>
   tab_style(
     locations = cells_grand_summary(),
