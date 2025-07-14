@@ -234,7 +234,7 @@ firstReportTable |>
     Promedio = "Kg/recolección"
   )|>
   tab_options(
-    table.font.size = px(8),
+    table.font.size = px(10.5),
     table.font.names = "Montserrat"  # You can also use `pt(10)` or `pct(80)`
   )
 
@@ -365,8 +365,11 @@ secondReportTable |>
   tab_style(
     locations = cells_grand_summary(),
     style = cell_fill(color = "#ebebeb")
+  )|>
+  tab_options(
+    table.font.size = px(10.5),
+    table.font.names = "Montserrat"  # You can also use `pt(10)` or `pct(80)`
   )
-
 ``` 
 
 Número de recolecciones realizadas por mes de operación
@@ -683,6 +686,10 @@ newdata3 |>
   tab_style(
     locations = cells_grand_summary(),
     style = cell_fill(color = "#ebebeb")
+  )|>
+  tab_options(
+    table.font.size = px(10.5),
+    table.font.names = "Montserrat"  # You can also use `pt(10)` or `pct(80)`
   )
 
 ```
