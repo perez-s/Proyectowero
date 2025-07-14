@@ -342,7 +342,7 @@ secondReportTable |>
       cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -465,7 +465,7 @@ thirdReportTable |>
       cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -660,7 +660,7 @@ newdata3 |>
       cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
