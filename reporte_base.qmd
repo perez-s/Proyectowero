@@ -309,9 +309,15 @@ secondReportTable |>
   tab_spanner(
     label = last_4_digits[2],
     columns = ends_with(last_4_digits[2])
+<<<<<<< HEAD
   # )|>
   # cols_label_with(
   #   fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 4), .)  # Remove last 4 characters from column names
+=======
+  )|>
+  cols_label_with(
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
+>>>>>>> DEVELOPMENT
   )|>
   fmt_number(
     decimals = 0,
@@ -339,10 +345,14 @@ secondReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
+<<<<<<< HEAD
       # cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+=======
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+>>>>>>> DEVELOPMENT
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -432,9 +442,15 @@ thirdReportTable |>
   tab_spanner(
     label = last_4_digits[2],
     columns = ends_with(last_4_digits[2])
+<<<<<<< HEAD
   # )|> 
   # cols_label_with(
   #   fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 4), .)  # Remove last 4 characters from column names
+=======
+  )|> 
+  cols_label_with(
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
+>>>>>>> DEVELOPMENT
   )|>
   fmt_number(
     decimals = 0,
@@ -462,10 +478,14 @@ thirdReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
+<<<<<<< HEAD
       # cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+=======
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+>>>>>>> DEVELOPMENT
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -627,9 +647,15 @@ newdata3 |>
   tab_spanner(
     label = last_4_digits[2],
     columns = ends_with(last_4_digits[2])
+<<<<<<< HEAD
   # )|>
   # cols_label_with(
   #   fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 4), .)  # Remove last 4 characters from column names
+=======
+  )|>
+  cols_label_with(
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
+>>>>>>> DEVELOPMENT
   )|>
   fmt_number(
     decimals = 0,
@@ -657,10 +683,14 @@ newdata3 |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
+<<<<<<< HEAD
       # cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+=======
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+>>>>>>> DEVELOPMENT
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
