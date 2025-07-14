@@ -27,7 +27,7 @@ library(ggplot2)
 library(ggrepel)
 library(tidyverse)
 library(viridis)
-library(paletteer)
+# library(paletteer)
 library(ggradar)
 library(data.table)
 library(janitor)
@@ -298,7 +298,7 @@ secondReportTable |>
     columns = ends_with(last_4_digits[2])
   )|>
   cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 6), .)  # Remove last 4 characters from column names
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   fmt_number(
     decimals = 0,
@@ -326,10 +326,10 @@ secondReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -421,7 +421,7 @@ thirdReportTable |>
     columns = ends_with(last_4_digits[2])
   )|> 
   cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 6), .)  # Remove last 4 characters from column names
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   fmt_number(
     decimals = 0,
@@ -449,10 +449,10 @@ thirdReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -616,7 +616,7 @@ newdata3 |>
     columns = ends_with(last_4_digits[2])
   )|>
   cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 6), .)  # Remove last 4 characters from column names
+    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   fmt_number(
     decimals = 0,
@@ -637,10 +637,10 @@ newdata3 |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
+      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic.", sep = " ", last_4_digits[1]))),
+      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
