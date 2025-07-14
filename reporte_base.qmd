@@ -27,7 +27,7 @@ library(ggplot2)
 library(ggrepel)
 library(tidyverse)
 library(viridis)
-library(paletteer)
+# library(paletteer)
 library(ggradar)
 library(data.table)
 library(janitor)
@@ -35,6 +35,13 @@ library(lubridate)
 library(gt)
 library(forcats)
 
+# install.packages("paletter")
+# install.packages("ggradar")
+# install.packages("data.table")
+# install.packages("janitor")
+# install.packages("lubridate")
+# install.packages("gt")
+# install.packages("forcats")
 
 make_gradient <- function(n) {
   # col1, col2: character strings, e.g. "#FF0000"
