@@ -309,15 +309,9 @@ secondReportTable |>
   tab_spanner(
     label = last_4_digits[2],
     columns = ends_with(last_4_digits[2])
-<<<<<<< HEAD
-  # )|>
-  # cols_label_with(
-  #   fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 4), .)  # Remove last 4 characters from column names
-=======
   )|>
   cols_label_with(
     fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
->>>>>>> DEVELOPMENT
   )|>
   fmt_number(
     decimals = 0,
