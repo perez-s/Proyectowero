@@ -170,7 +170,7 @@ knitr::knit_expand(text = '
   bottom: 0.5pt,
 ))
 
-#set text(8pt)
+
 
 #show table.cell.where(y: 0): set text(weight: "bold")
 
