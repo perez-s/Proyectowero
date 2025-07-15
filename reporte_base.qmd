@@ -585,7 +585,7 @@ thirdReportTable |>
       cells_stubhead(),
       cells_grand_summary(),
       cells_stub_grand_summary(),
-      cells_stubhead()a
+      cells_stubhead()
     )
   )
 
