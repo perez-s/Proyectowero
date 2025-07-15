@@ -540,8 +540,7 @@ thirdReportTable |>
   tab_style(
     style = cell_borders(
       sides = c("left"),
-      weight = px(0.66),
-      color = "#000000"
+      weight = px(0.66)
     ),
     locations = list(
       cells_column_labels(columns = ends_with("Total")),
