@@ -424,8 +424,10 @@ secondReportTable |>
     locations = list(
       cells_body(),
       cells_column_labels(),
-      cells_stub(),
-      cells_grand_summary()
+      cells_stubhead(),
+      cells_grand_summary(),
+      cells_stub_grand_summary(),
+      cells_stubhead()
     )
   )
 ``` 
@@ -585,7 +587,8 @@ thirdReportTable |>
       cells_stubhead(),
       cells_grand_summary(),
       cells_stub_grand_summary(),
-      cells_stubhead()
+      cells_stubhead(),
+      cells_row_groups()
     )
   )
 
@@ -814,8 +817,11 @@ newdata3 |>
     locations = list(
       cells_body(),
       cells_column_labels(),
-      cells_stub(),
-      cells_grand_summary()
+      cells_stubhead(),
+      cells_grand_summary(),
+      cells_stub_grand_summary(),
+      cells_stubhead(),
+      cells_row_groups()
     )
   )
 
