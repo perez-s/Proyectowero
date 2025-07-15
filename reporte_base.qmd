@@ -258,9 +258,16 @@ firstReportTable |>
     grand_summary_row.border.width = px(1),
     table_body.hlines.width = px(0),
     table_body.vlines.width = px(1)  # You can also use `pt(10)` or `pct(80)`
+  )|>
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = list(
+      cells_body(),
+      cells_column_labels(),
+      cells_stub(),
+      cells_grand_summary()
+    )
   )
-
-
 
 ```
 
@@ -413,6 +420,15 @@ secondReportTable |>
     grand_summary_row.border.width = px(1),
     table_body.hlines.width = px(0),
     table_body.vlines.width = px(1)  # You can also use `pt(10)` or `pct(80)`
+  )|>
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = list(
+      cells_body(),
+      cells_column_labels(),
+      cells_stub(),
+      cells_grand_summary()
+    )
   )
 ``` 
 
@@ -562,6 +578,15 @@ thirdReportTable |>
     grand_summary_row.border.width = px(1),
     table_body.hlines.width = px(0),
     table_body.vlines.width = px(1)  # You can also use `pt(10)` or `pct(80)`
+  )|>
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = list(
+      cells_body(),
+      cells_column_labels(),
+      cells_stub(),
+      cells_grand_summary()
+    )
   )
 
 ``` 
