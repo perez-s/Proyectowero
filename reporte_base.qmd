@@ -582,8 +582,10 @@ thirdReportTable |>
     locations = list(
       cells_body(),
       cells_column_labels(),
-      cells_stub(),
-      cells_grand_summary()
+      cells_stubhead(),
+      cells_grand_summary(),
+      cells_stub_grand_summary(),
+      cells_stubhead()a
     )
   )
 
