@@ -256,7 +256,7 @@ firstReportTable |>
     row_group.border.bottom.width = px(1),
     summary_row.border.width = px(1),
     grand_summary_row.border.width = px(1),
-    table_body.hlines.width = px(1),
+    table_body.hlines.width = px(0),
     table_body.vlines.width = px(1)  # You can also use `pt(10)` or `pct(80)`
   )
 
@@ -411,7 +411,7 @@ secondReportTable |>
     row_group.border.bottom.width = px(1),
     summary_row.border.width = px(1),
     grand_summary_row.border.width = px(1),
-    table_body.hlines.width = px(1),
+    table_body.hlines.width = px(0),
     table_body.vlines.width = px(1)  # You can also use `pt(10)` or `pct(80)`
   )
 ``` 
@@ -560,7 +560,7 @@ thirdReportTable |>
     row_group.border.bottom.width = px(1),
     summary_row.border.width = px(1),
     grand_summary_row.border.width = px(1),
-    table_body.hlines.width = px(1),
+    table_body.hlines.width = px(0),
     table_body.vlines.width = px(1)  # You can also use `pt(10)` or `pct(80)`
   )
 
