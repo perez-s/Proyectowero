@@ -790,7 +790,7 @@ newdata3 |>
       cells_body(),
       cells_column_labels(),
       cells_stub(),
-      cells_grand_summary(),
+      cells_grand_summary()
     )
   )
 
