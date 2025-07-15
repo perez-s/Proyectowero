@@ -263,9 +263,7 @@ firstReportTable |>
     style = cell_text(align = "center"),
     locations = list(
       cells_body(),
-      cells_column_labels(),
-      cells_stub(),
-      cells_grand_summary()
+      cells_column_labels()
     )
   )
 
