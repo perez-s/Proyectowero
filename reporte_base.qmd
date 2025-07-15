@@ -789,7 +789,8 @@ newdata3 |>
     locations = list(
       cells_body(),
       cells_column_labels(),
-      cells_stub()
+      cells_stub(),
+      cells_grand_summary(),
     )
   )
 
