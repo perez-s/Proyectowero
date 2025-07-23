@@ -113,7 +113,7 @@ if ss["authentication_status"]:
                     st.download_button(
                         label="Descargar Reporte",
                         data=file,
-                        file_name=f"{Clientes}.png",
+                        file_name=f"{Clientes}.pdf",
                         mime="application/pdf",
                         key="download_report",
                         use_container_width=True,
