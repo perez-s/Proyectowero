@@ -258,7 +258,15 @@ Resumen general resultados operativos.
 
 :::
 
-
+```{r} 
+#| echo: false
+#| output: asis
+knitr::knit_expand(text = 
+'
+#show figure: set block(breakable: true)
+'
+) |> knitr::raw_block("typst")
+```
 
 ::: {#tbl-2}
 ```{r}
@@ -295,17 +303,6 @@ secondReportTable |>
   )|>
   tab_stubhead(
     label = "Ciudad"
-  # )|>
-  # tab_spanner(
-  #   label = last_4_digits[1],
-  #   columns = ends_with(last_4_digits[1])
-  # )|>
-  # tab_spanner(
-  #   label = last_4_digits[2],
-  #   columns = ends_with(last_4_digits[2])
-  # )|>
-  # cols_label_with(
-  #   fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   cols_width(
     Ciudad ~ "15%",
@@ -449,7 +446,6 @@ thirdReportTable <- newdata |>
     values_fill = 0
   )|>
   mutate(Total = rowSums(across(where(is.numeric))))
-
 
 thirdReportTable |>
   gt(
@@ -665,7 +661,6 @@ Composición de los residuos aprovechables por tipo de material
 
 ```{r}
 #| echo: false
-
 
 # month_levels <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
 
