@@ -108,8 +108,8 @@ if ss["authentication_status"]:
     for i in range(len(recomendacioneslist)):
         recomendacionfinal = recomendacionfinal + f"{i+1}. {recomendaciones[recomendacioneslist[i]]}\n\n"
     if recomendacionadicional != "":
-        recomendacionfinal2 = recomendacionfinal + f"{len(recomendacioneslist)+1}. {recomendacionadicional}\n\n"    
-    recomendacionfinal2 = repr(recomendacionfinal2).replace("'", '"')
+        recomendacionfinal = recomendacionfinal + f"{len(recomendacioneslist)+1}. {recomendacionadicional}\n\n"    
+    recomendacionfinal = repr(recomendacionfinal).replace("'", '"')
     oganicosselect = st.selectbox("Reportar residuos orgánicos?", ["Si", "No"], index=1)
 
     if st.button("Generar Reporte", key="generate_report", use_container_width=True):
