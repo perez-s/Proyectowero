@@ -107,7 +107,8 @@ if ss["authentication_status"]:
     recomendacionfinal = "Para este periodo de informe proponemos las siguientes recomendaciones. \n\n"
     for i in range(len(recomendacioneslist)):
         recomendacionfinal = recomendacionfinal + f"{i+1}. {recomendaciones[recomendacioneslist[i]]}\n\n"
-    recomendacionfinal2 = recomendacionfinal + f"{len(recomendacioneslist)+1}. {recomendacionadicional}\n\n"
+    if recomendacionadicional != "":
+        recomendacionfinal2 = recomendacionfinal + f"{len(recomendacioneslist)+1}. {recomendacionadicional}\n\n"    
     recomendacionfinal2 = repr(recomendacionfinal2).replace("'", '"')
     oganicosselect = st.selectbox("Reportar residuos orgánicos?", ["Si", "No"], index=1)
 
