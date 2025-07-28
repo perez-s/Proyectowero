@@ -557,14 +557,6 @@ thirdReportTable |>
     use_seps = TRUE,
     sep_mark = ".",
     dec_mark = ","
-  )|>
-  tab_style(
-    style = cell_text(
-      weight = "bold"
-    ),
-    locations = list(
-      cells_row_groups()
-    )
   )
 
 ``` 
