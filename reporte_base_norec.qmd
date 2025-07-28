@@ -1,0 +1,802 @@
+---
+title: "Reporte Wero"
+lang: es
+typst-logo: 
+  path: "logo.png"
+format: PrettyTypst-typst
+editor: 
+  render-on-save: true  
+params:
+  client: "Qbano"
+  startdate: "2024-07-09"
+  enddate: "2025-07-14"
+  nodoc: "1"
+  rec: ""
+  obs: ""
+engine: knitr
+
+---
+
+```{r}
+#| echo: false
+#| include: false
+Sys.setlocale("LC_TIME", "Spanish")
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggrepel)
+library(tidyverse)
+library(viridis)
+# library(paletteer)
+library(ggradar)
+library(data.table)
+library(janitor)
+library(lubridate)
+library(gt)
+library(forcats)
+
+# install.packages("dplyr")
+# install.packages("tidyr")
+# install.packages("ggplot2")
+# install.packages("ggrepel")
+# install.packages("tidyverse")
+# install.packages("viridis")
+# install.packages("paletter")
+# install.packages("devtools")
+# install.packages("data.table")
+# install.packages("janitor")
+# install.packages("lubridate")
+# install.packages("gt")
+# install.packages("forcats")
+
+make_gradient <- function(n) {
+  # col1, col2: character strings, e.g. "#FF0000"
+  # n: integer, number of colours in the gradient
+  grDevices::colorRampPalette(c("#3BD4AE", "#2E1A46"))(n)
+}
+
+
+```
+
+```{r}
+#| echo: false
+#| output: asis
+
+startdate <- format(as.Date(params$startdate), "%d de %B de %Y")
+enddate <- format(as.Date(params$enddate), "%d de %B de %Y")
+start_date <- as.Date(params$startdate)
+end_date <- as.Date(params$enddate)
+todaysdate <- format(Sys.Date(), "%d de %B de %Y")
+
+knitr::knit_expand(text = '
+
+#set align(center)
+#table(
+  columns: 4,
+  align: (right + horizon, center + horizon, right + horizon, center + horizon),
+  fill: (rgb("#d9d9d9"), none, rgb("#d9d9d9"), none),
+[
+ *Fecha presentación:*
+ ],
+table.cell(
+    colspan: 3,
+    align: center,
+)[{{todaysdate}}],
+[
+ *Nombre del documento:*
+ ],
+table.cell(
+    colspan: 3,
+    align: center,
+)[Proyecto Piloto Circularidad de
+ Residuos (Coca Cola – {{params$client}})],
+[
+ *Fecha inicio de
+ proyecto:*
+ ],
+table.cell(
+    colspan: 3,
+    align: center,
+)[13 de diciembre de 2023],
+[
+ *No. del documento:*
+ ],
+[{{params$nodoc}}],
+[
+ *Periodo del informe:*
+ ],
+[Del {{start_date}} al {{end_date}}],
+)
+#set align(left)
+
+') |> knitr::raw_block("typst")
+```
+
+```{r}
+#| echo: false
+
+data <- read.csv("bd_cocacola.csv", sep=",")
+data$Fecha <- as.Date(data$Fecha, format="%m/%d/%Y")
+newdata <- data[data$Fuente == params$client,]
+newdata <- subset(newdata, Etapa == "Recolección")
+newdata <- subset(newdata, kg > 0)
+newdata <- subset(newdata, !is.na(kg))
+newdata <- subset(newdata, Fecha >= start_date & Fecha <= end_date)
+numPuntosDeVenta <- c(length(unique(newdata$Sucursal)))
+
+ciudadesList <- c(unique(newdata$Ciudad))
+
+# creating dict with number of franchises per city
+numPuntos <- ""
+for (i in 1:length(ciudadesList)) {
+  newdataFor <- subset(newdata, Ciudad == ciudadesList[i])
+  numPuntosDeVentaPerCity <- c(length(unique(newdataFor$Sucursal)))
+  
+  numPuntos[ciudadesList[i]] <- numPuntosDeVentaPerCity
+}
+
+# string to list number of franchises per city
+largestring <- ""
+for (i in 1:length(ciudadesList)) {
+  if (i == length(ciudadesList) & length(ciudadesList) > 1) {
+    largestring <- paste(largestring,sprintf(" y %s en la ciudad de %s",numPuntos[i+1],ciudadesList[i]), sep = "")
+  } 
+  
+  else if (length(ciudadesList) == 1 | length(ciudadesList) == 2 | i == length(ciudadesList)-1) {
+    largestring <- paste(largestring,sprintf(" %s en la ciudad de %s",numPuntos[i+1],ciudadesList[i]), sep = "")
+  }
+
+  else {
+    largestring <- paste(largestring,sprintf(" %s en la ciudad de %s,",numPuntos[i+1],ciudadesList[i]), sep = "")
+  }
+}
+largestring <- str_squish(largestring)
+
+```
+
+# Información General
+
+A continuación, en las siguientes tablas se presentan los datos registrados con corte al `{r} enddate` del proyecto de circularidad de residuos en los `{r} numPuntosDeVenta` puntos de venta de `{r} params$client` seleccionados para el piloto, `{r} largestring`. Estos resultados son gracias al esfuerzo conjunto entre Coca Cola y `{r} params$client` para promover acciones encaminadas a la circularidad, la sostenibilidad y lograr Un Mundo Sin Residuos.
+
+```{r}
+#| echo: false
+#| output: asis
+#| 
+knitr::knit_expand(text = '
+
+#set table(stroke: (x, y) => (
+  left: if x == 0 or y > 0 { 0pt } else { 0pt },
+  right: 0pt,
+  top: if y == 1 { 0.5pt } else if y == 0 { 0.5pt } else { 0pt },
+  bottom: 0.5pt,
+))
+
+
+#set text(8pt)
+#show table.cell.where(y: 0): set text(weight: "bold")
+
+
+') |> knitr::raw_block("typst")
+```
+
+::: {#tbl-1}
+
+
+```{r}
+#| echo: false
+data <- read.csv("bd_cocacola.csv", sep=",")
+data$Fecha <- as.Date(data$Fecha, format="%m/%d/%Y")
+newdata <- data[data$Fuente == params$client,]
+newdata <- subset(newdata, Etapa == "Recolección")
+newdata <- subset(newdata, kg > 0)
+newdata <- subset(newdata, Fecha >= start_date & Fecha <= end_date)
+
+ciudadesList <- c(unique(newdata$Ciudad))
+
+firstReportTable <- newdata |>
+  group_by(Ciudad) |>
+  summarise(
+    Peso = sum(kg, na.rm = TRUE),
+    Conteo = n(),
+    Promedio = Peso / Conteo,
+    .groups = "drop"
+  )
+
+firstReportTable |>
+  gt(
+  )|>
+  cols_label(
+    Peso = "Cantidad RS (kg)",
+    Conteo = "Recolecciones",
+    Promedio = "Kg/recolección"
+  )|>
+  tab_options(
+    table.font.size = px(9.5),
+    table.font.names = "Montserrat",
+    table.border.top.color = "black",
+    table.border.bottom.color = "black",
+    heading.border.bottom.color = "black",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    row_group.border.top.color = "black",
+    row_group.border.bottom.color = "black",
+    summary_row.border.color = "black",
+    grand_summary_row.border.color = "black",
+    table_body.hlines.color = "black",
+    table_body.vlines.color = "black",
+    table.border.top.width = px(0.66),
+    table.border.bottom.width = px(0.66),
+    heading.border.bottom.width = px(0.66),
+    column_labels.border.top.width = px(0.66),
+    column_labels.border.bottom.width = px(0.66),
+    row_group.border.top.width = px(0.66),
+    row_group.border.bottom.width = px(0.66),
+    summary_row.border.width = px(0.66),
+    grand_summary_row.border.width = px(0.66),
+    table_body.hlines.width = px(0),
+    table_body.vlines.width = px(0.66)
+  )|>
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = list(
+      cells_body(),
+      cells_column_labels()
+    )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = ".",
+    dec_mark = ","
+  ) 
+
+```
+
+Resumen general resultados operativos.
+
+:::
+
+```{r} 
+#| echo: false
+#| output: asis
+knitr::knit_expand(text = 
+'
+#show figure: set block(breakable: true)
+'
+) |> knitr::raw_block("typst")
+```
+
+::: {#tbl-2}
+```{r}
+#| echo: false
+#| fig-height: 1
+#| fig-cap: ""
+
+secondReportTable <- newdata |>
+  mutate(
+    date = as.Date(Fecha),
+    month_date = floor_date(date, "month"),              # e.g., 2024-04-01
+    month_label = format(month_date, "%b %y")             # e.g., "Apr 2024"
+  ) |>
+  group_by(Ciudad, month_date, month_label) |>
+  summarise(Peso = sum(kg, na.rm = TRUE), .groups = "drop") |>
+  arrange(month_date) |>
+  mutate(month_label = factor(month_label, levels = unique(month_label))) |>
+  select(-month_date) |>
+  pivot_wider(
+    names_from = month_label,
+    values_from = Peso,
+    values_fill = 0
+  )|>
+  mutate(Total = rowSums(across(where(is.numeric))))
+
+last_4_digits <- unique(
+  sub(".*(\\d{4})$", "\\1", colnames(secondReportTable)[grepl("\\d{4}$", colnames(secondReportTable))])
+)
+
+secondReportTable |>
+  gt(
+    rowname_col = "Ciudad",
+    # row_group.sep = getOption("gt.row_group.sep", " - ")
+  )|>
+  tab_stubhead(
+    label = "Ciudad"
+  )|>
+  cols_width(
+    Ciudad ~ "15%",
+    Total ~ "10%",
+    everything() ~ "5%"
+  )|>
+  grand_summary_rows(
+    fns =  list(label = "Total", id = "totals", fn = "sum"),
+    fmt = ~ fmt_number(.,decimals = 1,use_seps = TRUE,
+                      sep_mark = ".", dec_mark = ",")
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("top", "bottom"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    )
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("right"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_stub(rows = everything()),
+      cells_stub_grand_summary(rows = everything()),
+      cells_stubhead()
+      )
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("left"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_column_labels(columns = ends_with("Total")),
+      cells_body(columns = ends_with("Total")),
+      cells_grand_summary(columns = ends_with("Total"))
+      )
+  )|>
+  tab_style(
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    ),
+    style = cell_fill(color = "#ebebeb")
+  )|>
+  tab_options(
+    table.font.size = px(9.5),
+    table.font.names = "Montserrat",
+    table.border.top.color = "black",
+    table.border.bottom.color = "black",
+    heading.border.bottom.color = "black",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    row_group.border.top.color = "black",
+    row_group.border.bottom.color = "black",
+    summary_row.border.color = "black",
+    grand_summary_row.border.color = "black",
+    table_body.hlines.color = "black",
+    table_body.vlines.color = "black",
+    table.border.top.width = px(0.66),
+    table.border.bottom.width = px(0.66),
+    heading.border.bottom.width = px(0.66),
+    column_labels.border.top.width = px(0.66),
+    column_labels.border.bottom.width = px(0.66),
+    row_group.border.top.width = px(0.66),
+    row_group.border.bottom.width = px(0.66),
+    summary_row.border.width = px(0.66),
+    grand_summary_row.border.width = px(0.66),
+    table_body.hlines.width = px(0),
+    table_body.vlines.width = px(0.66)  # You can also use `pt(10)` or `pct(80)`
+  )|>
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = list(
+      cells_body(),
+      cells_column_labels(),
+      cells_stubhead(),
+      cells_grand_summary(),
+      cells_stub_grand_summary(),
+      cells_stubhead()
+    )
+  )|>
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = list(
+      cells_stub()
+    )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = ".",
+    dec_mark = ","
+  )
+``` 
+
+Número de recolecciones realizadas por mes de operación
+
+:::
+
+
+```{r} 
+#| echo: false
+#| output: asis
+knitr::knit_expand(text = 
+'
+#show figure: set block(breakable: true)
+
+'
+) |> knitr::raw_block("typst")
+```
+
+::: {#tbl-3}
+```{r}
+#| echo: false
+#| fig-height: 1
+#| fig-cap: ""
+
+puntosList <- c(unique(newdata$Sucursal))
+thirdReportTable <- newdata |>
+  mutate(
+    date = as.Date(Fecha),
+    month_date = floor_date(date, "month"),              # e.g., 2024-04-01
+    month_label = format(month_date, "%b %y")             # e.g., "Apr 2024"
+  ) |>
+  group_by(Ciudad, Sucursal, month_date, month_label) |>
+  summarise(Peso = sum(kg, na.rm = TRUE), .groups = "drop") |>
+  arrange(month_date) |>
+  mutate(month_label = factor(month_label, levels = unique(month_label))) |>
+  select(-month_date) |>
+  pivot_wider(
+    names_from = month_label,
+    values_from = Peso,
+    values_fill = 0
+  )|>
+  mutate(Total = rowSums(across(where(is.numeric))))
+
+thirdReportTable |>
+  gt(
+    rowname_col = "Sucursal",
+    groupname_col = "Ciudad"
+  )|>
+  tab_stubhead(
+    label = "Sucursal"
+  )|>
+  cols_width(
+    Sucursal ~ "15%",
+    Total ~ "10%",
+    everything() ~ "5%"
+  )|>
+  grand_summary_rows(
+    fns =  list(label = "Total", id = "totals", fn = "sum"),
+    fmt = ~ fmt_number(.,decimals = 0,use_seps = TRUE,
+                      sep_mark = ".", dec_mark = ",")
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("top", "bottom"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_grand_summary(),
+      cells_row_groups(),
+      cells_stub_grand_summary(rows = everything())
+    )
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("right"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_stub(rows = everything()),
+      cells_stub_grand_summary(rows = everything()),
+      cells_stubhead()
+      )
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("left"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_column_labels(columns = ends_with("Total")),
+      cells_body(columns = ends_with("Total")),
+      cells_grand_summary(columns = ends_with("Total"))
+      )
+  )|>
+  tab_style(
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    ),
+    style = cell_fill(color = "#ebebeb")
+  )|>
+  tab_options(
+    table.font.size = px(9.5),
+    row_group.font.weight = "bold",
+    table.font.names = "Montserrat",
+    table.border.top.color = "black",
+    table.border.bottom.color = "black",
+    heading.border.bottom.color = "black",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    row_group.border.top.color = "black",
+    row_group.border.bottom.color = "black",
+    summary_row.border.color = "black",
+    grand_summary_row.border.color = "black",
+    table_body.hlines.color = "black",
+    table_body.vlines.color = "black",
+    table.border.top.width = px(0.66),
+    table.border.bottom.width = px(0.66),
+    heading.border.bottom.width = px(0.66),
+    column_labels.border.top.width = px(0.66),
+    column_labels.border.bottom.width = px(0.66),
+    row_group.border.top.width = px(0.66),
+    row_group.border.bottom.width = px(0.66),
+    summary_row.border.width = px(0.66),
+    grand_summary_row.border.width = px(0.66),
+    table_body.hlines.width = px(0),
+    table_body.vlines.width = px(0.66)  # You can also use `pt(10)` or `pct(80)`
+  )|>
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = list(
+      cells_body(),
+      cells_column_labels(),
+      cells_stubhead(),
+      cells_grand_summary(),
+      cells_stub_grand_summary(),
+      cells_stubhead(),
+      cells_row_groups()
+    )
+  )|>
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = list(
+      cells_stub()
+    )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = ".",
+    dec_mark = ","
+  )
+
+``` 
+
+Cantidad de residuos recogidos (kg) por punto de venta
+
+:::
+
+```{r}
+#| echo: false
+
+# string to list number of franchises per city
+largestring2 <- ""
+for (i in 1:length(ciudadesList)) {
+  newdataFor <- subset(newdata, Ciudad == ciudadesList[i])
+  numRecolecciones <- nrow(newdataFor)
+  totalKg <- sum(newdataFor$kg, na.rm = TRUE)
+  kgPerRecoleccion <- totalKg/numRecolecciones
+  if (i == length(ciudadesList) & length(ciudadesList) > 1) {
+    largestring2 <- paste(largestring2,sprintf(" y %s kg de residuos en la ciudad de %s",format(round(kgPerRecoleccion,2), nsmall=2, big.mark=".", decimal.mark=","),ciudadesList[i]), sep = "")
+  }
+
+  else if (length(ciudadesList) == 1 | length(ciudadesList) == 2 | i == length(ciudadesList)-1) {
+    largestring2 <- paste(largestring2,sprintf(" %s kg de residuos en la ciudad de %s",format(round(kgPerRecoleccion,2), nsmall=2, big.mark=".", decimal.mark=","),ciudadesList[i]), sep = "")
+  }
+
+  else {
+    largestring2 <- paste(largestring2,sprintf(" %s kg de residuos en la ciudad de %s,",format(round(kgPerRecoleccion,2), nsmall=2, big.mark=".", decimal.mark=","),ciudadesList[i]), sep = "")
+  }
+}
+
+largestring2 <- str_squish(largestring2)
+```
+
+```{r} 
+#| echo: false
+#| output: asis
+knitr::knit_expand(text = 
+'
+#set text(10pt)
+
+'
+) |> knitr::raw_block("typst")
+```
+
+De acuerdo con la @tbl-1, @tbl-2 y @tbl-3, se puede concluir que en cada servicio se está haciendo una recolección promedio de `{r} largestring2`.
+En la @fig-1, se presenta gráficamente la composición general de los residuos sólidos aprovechables que se han entregado a la fecha de corte de este informe en las sucursales participantes del piloto; mientras tanto, en la @tbl-4, se presenta la cantidad de residuos por material en kilogramos.
+
+```{r} 
+#| echo: false
+#| output: asis
+knitr::knit_expand(text = 
+'
+#set text(8pt)
+'
+) |> knitr::raw_block("typst")
+```
+
+::: {#fig-1}
+```{r}
+#| echo: false
+newdata2 <- data[data$Fuente == params$client,]
+newdata2 <- subset(newdata2, kg > 0)
+newdata2 <- subset(newdata2, Etapa == "Caracterización")
+newdata2 <- subset(newdata2, Fecha >= start_date & Fecha <= end_date)
+
+newdata33 <- newdata2 |>
+  group_by(Categoría) |>
+  summarise(Peso = sum(kg, na.rm = TRUE))
+
+newdata3 <- newdata2 |>
+  group_by(Categoría) |>
+  summarise(
+    Porcentaje = sum(kg, na.rm = TRUE) / sum(newdata33$Peso) * 100,
+  )
+ggplot(newdata3, aes(x= Porcentaje, y= reorder(Categoría, Porcentaje), fill=Categoría)) + 
+  geom_col(position = "dodge", width = 0.6)+
+  theme(
+    legend.position="none",
+    panel.background = element_rect("white"),
+    panel.grid.major = element_line(linewidth = 0.5, linetype = 'solid', colour = "grey90"), 
+    panel.grid.minor = element_line(linewidth = 0.25, linetype = 'solid', colour = "grey90"),
+    axis.line = element_line(linewidth = 0.1, linetype = "solid", colour = "grey50")
+    )+
+  labs(y = "Categoría")
+
+```
+
+Composición de los residuos aprovechables por tipo de material 
+(total: `{r} format(round(sum(newdata33$Peso),1), nsmall=1, big.mark=".", decimal.mark=",")` kg)
+
+::: 
+
+::: {#tbl-4}
+
+```{r}
+#| echo: false
+
+# month_levels <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
+
+newdata3 <- newdata2 |>
+  mutate(
+    date = as.Date(Fecha),
+    month_date = floor_date(date, "month"),              # e.g., 2024-04-01
+    month_label = format(month_date, "%b %y")             # e.g., "Apr 2024"
+  ) |>
+  group_by(Categoría, month_date, month_label) |>
+  summarise(Peso = sum(kg, na.rm = TRUE), .groups = "drop") |>
+  arrange(month_date) |>
+  mutate(month_label = factor(month_label, levels = unique(month_label))) |>
+  select(-month_date) |>
+  pivot_wider(
+    names_from = month_label,
+    values_from = Peso,
+    values_fill = 0
+  )|>
+  mutate(Total = rowSums(across(where(is.numeric))))
+
+newdata3 |>
+  gt(
+    rowname_col = "Categoría",
+    # row_group.sep = getOption("gt.row_group.sep", " - ")
+  )|>
+  tab_stubhead(
+    label = "Material"
+  )|>
+  cols_width(
+    Categoría ~ "15%",
+    Total ~ "10%",
+    everything() ~ "5%"
+  )|>
+  grand_summary_rows(
+    fns =  list(label = "Total", id = "totals", fn = "sum"),
+    fmt = ~ fmt_number(.,decimals = 1,use_seps = TRUE,
+                      sep_mark = ".", dec_mark = ",")
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("top", "bottom"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    )
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("right"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_stub(rows = everything()),
+      cells_stub_grand_summary(rows = everything()),
+      cells_stubhead()
+      )
+  )|>
+  tab_style(
+    style = cell_borders(
+      sides = c("left"),
+      weight = px(0.66)
+    ),
+    locations = list(
+      cells_column_labels(columns = ends_with("Total")),
+      cells_body(columns = ends_with("Total")),
+      cells_grand_summary(columns = ends_with("Total"))
+      )
+  )|>
+  tab_style(
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    ),
+    style = cell_fill(color = "#ebebeb")
+  )|>
+  tab_options(
+    table.font.size = px(9.5),
+    table.font.names = "Montserrat",
+    table.border.top.color = "black",
+    table.border.bottom.color = "black",
+    heading.border.bottom.color = "black",
+    column_labels.border.top.color = "black",
+    column_labels.border.bottom.color = "black",
+    row_group.border.top.color = "black",
+    row_group.border.bottom.color = "black",
+    summary_row.border.color = "black",
+    grand_summary_row.border.color = "black",
+    table_body.hlines.color = "black",
+    table_body.vlines.color = "black",
+    table.border.top.width = px(0.66),
+    table.border.bottom.width = px(0.66),
+    heading.border.bottom.width = px(0.66),
+    column_labels.border.top.width = px(0.66),
+    column_labels.border.bottom.width = px(0.66),
+    row_group.border.top.width = px(0.66),
+    row_group.border.bottom.width = px(0.66),
+    summary_row.border.width = px(0.66),
+    grand_summary_row.border.width = px(0.66),
+    table_body.hlines.width = px(0),
+    table_body.vlines.width = px(0.66)  # You can also use `pt(10)` or `pct(80)`
+  )|>
+  tab_style(
+    style = cell_text(align = "center"),
+    locations = list(
+      cells_body(),
+      cells_column_labels(),
+      cells_stubhead(),
+      cells_grand_summary(),
+      cells_stub_grand_summary(),
+      cells_stubhead(),
+      cells_row_groups()
+    )
+  )|>
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = list(
+      cells_stub()
+    )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = ".",
+    dec_mark = ","
+  )
+
+```
+
+Listado de materiales recibidos como materiales aprovechables
+
+:::
+```{r} 
+#| echo: false
+#| output: asis
+knitr::knit_expand(text = 
+'
+#set text(10pt)
+'
+) |> knitr::raw_block("typst")
+```
+

@@ -104,7 +104,10 @@ if ss["authentication_status"]:
     }
     recomendacioneslist = st.multiselect("Selecciona una recomendación:", list(recomendaciones.keys()), placeholder="Escoge una o varias recomendaciones", disabled=norecomendacion)
     recomendacionadicional = st.text_area("Recomendación adicional", placeholder="Escribe una recomendación adicional aquí...", key="recomendacionadicional", disabled=norecomendacion)
-    recomendacionfinal = "Para este periodo de informe proponemos las siguientes recomendaciones. \n\n"
+    if norecomendacion:
+        recomendacionfinal = ""
+    else:
+        recomendacionfinal = "Para este periodo de informe proponemos las siguientes recomendaciones. \n\n"
     for i in range(len(recomendacioneslist)):
         recomendacionfinal = recomendacionfinal + f"{i+1}. {recomendaciones[recomendacioneslist[i]]}\n\n"
     if recomendacionadicional != "":
@@ -117,9 +120,15 @@ if ss["authentication_status"]:
             if os.path.exists(f"{Clientes}.pdf"):
                 os.remove(f"{Clientes}.pdf")
             if oganicosselect == "Si":
-                os.system(f"quarto render reporte_organicos.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")    
+                if norecomendacion:
+                    os.system(f"quarto render reporte_organicos_norec.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
+                else:
+                    os.system(f"quarto render reporte_organicos.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf") 
             else:
-                os.system(f"quarto render reporte_base.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
+                if norecomendacion:      
+                    os.system(f"quarto render reporte_base_norec.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
+                else:
+                    os.system(f"quarto render reporte_base.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
             try:    
                 with open(f"{Clientes}.pdf", "rb") as file:
                     st.download_button(
