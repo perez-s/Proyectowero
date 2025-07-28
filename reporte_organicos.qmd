@@ -653,7 +653,7 @@ ggplot(newdata3, aes(x= Porcentaje, y= reorder(Categoría, Porcentaje), fill=Cat
 ```
 
 Composición de los residuos aprovechables por tipo de material 
-(total: `{r} format(sum(newdata33$Peso), nsmall=1, big.mark=".", decimal.mark=",")` kg)
+(total: `{r} format(round(sum(newdata33$Peso),1), nsmall=1, big.mark=".", decimal.mark=",")` kg)
 
 ::: 
 
