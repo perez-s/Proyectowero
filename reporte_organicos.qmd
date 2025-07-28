@@ -211,7 +211,7 @@ firstReportTable |>
     Promedio = "Kg/recolección"
   )|>
   tab_options(
-    table.font.size = px(8.5),
+    table.font.size = px(9.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
@@ -354,7 +354,7 @@ secondReportTable |>
     style = cell_fill(color = "#ebebeb")
   )|>
   tab_options(
-    table.font.size = px(8.5),
+    table.font.size = px(9.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
@@ -506,7 +506,7 @@ thirdReportTable |>
     style = cell_fill(color = "#ebebeb")
   )|>
   tab_options(
-    table.font.size = px(8.5),
+    table.font.size = px(9.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
@@ -740,7 +740,7 @@ newdata3 |>
     style = cell_fill(color = "#ebebeb")
   )|>
   tab_options(
-    table.font.size = px(8.5),
+    table.font.size = px(9.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
