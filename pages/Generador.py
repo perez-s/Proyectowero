@@ -117,9 +117,9 @@ if ss["authentication_status"]:
             if os.path.exists(f"{Clientes}.pdf"):
                 os.remove(f"{Clientes}.pdf")
             if oganicosselect == "Si":
-                os.system(f"quarto render reporte_organicos.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal2} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")    
+                os.system(f"quarto render reporte_organicos.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")    
             else:
-                os.system(f"quarto render reporte_base.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal2} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
+                os.system(f"quarto render reporte_base.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
             try:    
                 with open(f"{Clientes}.pdf", "rb") as file:
                     st.download_button(
