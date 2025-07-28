@@ -120,6 +120,7 @@ data$Fecha <- as.Date(data$Fecha, format="%m/%d/%Y")
 newdata <- data[data$Fuente == params$client,]
 newdata <- subset(newdata, Etapa == "Recolección")
 newdata <- subset(newdata, kg > 0)
+newdata <- subset(newdata, !is.na(kg))
 newdata <- subset(newdata, Fecha >= start_date & Fecha <= end_date)
 numPuntosDeVenta <- c(length(unique(newdata$Sucursal)))
 
@@ -201,32 +202,8 @@ firstReportTable <- newdata |>
     .groups = "drop"
   )
 
-# firstReportTable <- data.frame(Ciudad = character(), `Cantidad RS (Kg)` = numeric(), Recolecciones = numeric(), `Kg/recolección` = numeric(), check.names = F ) 
-
-# for (i in 1:length(ciudadesList)) {
-
-#   newdataFor <- subset(newdata, Ciudad == ciudadesList[i])
-#   numRecolecciones <- nrow(newdataFor)
-#   totalKg <- sum(newdataFor$kg, na.rm = TRUE)
-#   kgPerRecoleccion <- totalKg/numRecolecciones
-  
-#   firstReportTable <- rbind(    
-#     firstReportTable, data.frame(
-#       Ciudad = ciudadesList[i],
-#       `Cantidad RS (Kg)` = totalKg,
-#       Recolecciones = numRecolecciones,
-#       `Kg/recolección` = kgPerRecoleccion,
-#       check.names = F,
-#       stringsAsFactors = FALSE
-#     )
-#   )
-# }
 firstReportTable |>
   gt(
-  )|>
-  fmt_number(
-    decimals = 1,
-    use_seps = FALSE
   )|>
   cols_label(
     Peso = "Cantidad RS (kg)",
@@ -234,7 +211,7 @@ firstReportTable |>
     Promedio = "Kg/recolección"
   )|>
   tab_options(
-    table.font.size = px(10.5),
+    table.font.size = px(8.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
@@ -265,7 +242,15 @@ firstReportTable |>
       cells_body(),
       cells_column_labels()
     )
-  )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = "'",
+    dec_mark = ","
+  ) 
 
 ```
 
@@ -273,26 +258,7 @@ Resumen general resultados operativos.
 
 :::
 
-```{r} 
-#| echo: false
-#| output: asis
-knitr::knit_expand(text = 
-'
-#show figure: set block(breakable: true)
-#set table(stroke: (x, y) => (
-  left: if x == 0 or y > 0 { 0pt } else { 0pt },
-  right: 0pt,
-  top: if y == 1 { 0.5pt } else if y == 0 { 0.5pt } else if y == 2 { 0.5pt } else { 0pt },
-  bottom: 0.5pt,
-))
-#set text(8pt)
-#show table.cell.where(y: 1): set text(weight: "bold")
-#show table.cell.where(y: 0): set text(weight: "bold")
-#show table.cell.where(y: 1): set text(weight: "bold")
 
-'
-) |> knitr::raw_block("typst")
-```
 
 ::: {#tbl-2}
 ```{r}
@@ -300,13 +266,11 @@ knitr::knit_expand(text =
 #| fig-height: 1
 #| fig-cap: ""
 
-
-
 secondReportTable <- newdata |>
   mutate(
     date = as.Date(Fecha),
     month_date = floor_date(date, "month"),              # e.g., 2024-04-01
-    month_label = format(month_date, "%b %Y")             # e.g., "Apr 2024"
+    month_label = format(month_date, "%b %y")             # e.g., "Apr 2024"
   ) |>
   group_by(Ciudad, month_date, month_label) |>
   summarise(Peso = sum(kg, na.rm = TRUE), .groups = "drop") |>
@@ -331,21 +295,17 @@ secondReportTable |>
   )|>
   tab_stubhead(
     label = "Ciudad"
-  )|>
-  tab_spanner(
-    label = last_4_digits[1],
-    columns = ends_with(last_4_digits[1])
-  )|>
-  tab_spanner(
-    label = last_4_digits[2],
-    columns = ends_with(last_4_digits[2])
-  )|>
-  cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
-  )|>
-  fmt_number(
-    decimals = 0,
-    use_seps = FALSE
+  # )|>
+  # tab_spanner(
+  #   label = last_4_digits[1],
+  #   columns = ends_with(last_4_digits[1])
+  # )|>
+  # tab_spanner(
+  #   label = last_4_digits[2],
+  #   columns = ends_with(last_4_digits[2])
+  # )|>
+  # cols_label_with(
+  #   fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 5), .)  # Remove last 4 characters from column names
   )|>
   cols_width(
     Ciudad ~ "15%",
@@ -354,14 +314,18 @@ secondReportTable |>
   )|>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
-    fmt = ~ fmt_number(.,decimals = 0,use_seps = FALSE)
+    fmt = ~ fmt_number(.,decimals = 1,use_seps = TRUE,
+                      sep_mark = "'", dec_mark = ",")
   )|>
   tab_style(
     style = cell_borders(
       sides = c("top", "bottom"),
       weight = px(0.66)
     ),
-    locations = cells_grand_summary()
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    )
   )|>
   tab_style(
     style = cell_borders(
@@ -369,10 +333,6 @@ secondReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -390,11 +350,14 @@ secondReportTable |>
       )
   )|>
   tab_style(
-    locations = cells_grand_summary(),
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    ),
     style = cell_fill(color = "#ebebeb")
   )|>
   tab_options(
-    table.font.size = px(10.5),
+    table.font.size = px(8.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
@@ -429,6 +392,20 @@ secondReportTable |>
       cells_stub_grand_summary(),
       cells_stubhead()
     )
+  )|>
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = list(
+      cells_stub()
+    )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = "'",
+    dec_mark = ","
   )
 ``` 
 
@@ -443,16 +420,6 @@ Número de recolecciones realizadas por mes de operación
 knitr::knit_expand(text = 
 '
 #show figure: set block(breakable: true)
-#set table(stroke: (x, y) => (
-  left: if x == 0 or y > 0 { 0pt } else { 0pt },
-  right: 0pt,
-  top: if y == 1 { 0.5pt } else if y == 0 { 0.5pt } else if y == 2 { 0.5pt } else { 0pt },
-  bottom: 0.5pt,
-))
-#set text(8pt)
-#show table.cell.where(y: 1): set text(weight: "bold")
-#show table.cell.where(y: 0): set text(weight: "bold")
-#show table.cell.where(y: 1): set text(weight: "bold")
 
 '
 ) |> knitr::raw_block("typst")
@@ -469,7 +436,7 @@ thirdReportTable <- newdata |>
   mutate(
     date = as.Date(Fecha),
     month_date = floor_date(date, "month"),              # e.g., 2024-04-01
-    month_label = format(month_date, "%b %Y")             # e.g., "Apr 2024"
+    month_label = format(month_date, "%b %y")             # e.g., "Apr 2024"
   ) |>
   group_by(Ciudad, Sucursal, month_date, month_label) |>
   summarise(Peso = sum(kg, na.rm = TRUE), .groups = "drop") |>
@@ -483,6 +450,7 @@ thirdReportTable <- newdata |>
   )|>
   mutate(Total = rowSums(across(where(is.numeric))))
 
+
 thirdReportTable |>
   gt(
     rowname_col = "Sucursal",
@@ -491,21 +459,6 @@ thirdReportTable |>
   tab_stubhead(
     label = "Sucursal"
   )|>
-  tab_spanner(
-    label = last_4_digits[1],
-    columns = ends_with(last_4_digits[1])
-  )|>
-  tab_spanner(
-    label = last_4_digits[2],
-    columns = ends_with(last_4_digits[2])
-  )|> 
-  cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 4), .)  # Remove last 4 characters from column names
-  )|>
-  fmt_number(
-    decimals = 0,
-    use_seps = FALSE
-  )|>
   cols_width(
     Sucursal ~ "15%",
     Total ~ "10%",
@@ -513,14 +466,19 @@ thirdReportTable |>
   )|>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
-    fmt = ~ fmt_number(.,decimals = 0,use_seps = FALSE)
+    fmt = ~ fmt_number(.,decimals = 0,use_seps = TRUE,
+                      sep_mark = "'", dec_mark = ",")
   )|>
   tab_style(
     style = cell_borders(
       sides = c("top", "bottom"),
       weight = px(0.66)
     ),
-    locations = cells_grand_summary()
+    locations = list(
+      cells_grand_summary(),
+      cells_row_groups(),
+      cells_stub_grand_summary(rows = everything())
+    )
   )|>
   tab_style(
     style = cell_borders(
@@ -528,10 +486,6 @@ thirdReportTable |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -549,11 +503,14 @@ thirdReportTable |>
       )
   )|>
   tab_style(
-    locations = cells_grand_summary(),
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    ),
     style = cell_fill(color = "#ebebeb")
   )|>
   tab_options(
-    table.font.size = px(10.5),
+    table.font.size = px(8.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
@@ -587,6 +544,28 @@ thirdReportTable |>
       cells_grand_summary(),
       cells_stub_grand_summary(),
       cells_stubhead(),
+      cells_row_groups()
+    )
+  )|>
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = list(
+      cells_stub()
+    )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = "'",
+    dec_mark = ","
+  )|>
+  tab_style(
+    style = cell_text(
+      weight = "bold"
+    ),
+    locations = list(
       cells_row_groups()
     )
   )
@@ -628,14 +607,7 @@ largestring2 <- str_squish(largestring2)
 #| output: asis
 knitr::knit_expand(text = 
 '
-
-#show table.cell.where(y: 1): set text(weight: "regular")
-#show table.cell.where(y: 1): set text(weight: "regular")
-
 #set text(10pt)
-
-#show table.cell.where(y: 0): set text(weight: "bold")
-#show table.cell.where(y: 1): set text(weight: "bold")
 
 '
 ) |> knitr::raw_block("typst")
@@ -658,6 +630,7 @@ knitr::knit_expand(text =
 ```{r}
 #| echo: false
 newdata2 <- data[data$Fuente == params$client,]
+newdata2 <- subset(newdata2, kg > 0)
 newdata2 <- subset(newdata2, Etapa == "Caracterización")
 newdata2 <- subset(newdata2, Fecha >= start_date & Fecha <= end_date)
 
@@ -692,9 +665,7 @@ Composición de los residuos aprovechables por tipo de material
 
 ```{r}
 #| echo: false
-newdata2 <- data[data$Fuente == params$client,]
-newdata2 <- subset(newdata2, Etapa == "Caracterización")
-newdata2 <- subset(newdata2, Fecha >= start_date & Fecha <= end_date)
+
 
 # month_levels <- c("ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic")
 
@@ -702,7 +673,7 @@ newdata3 <- newdata2 |>
   mutate(
     date = as.Date(Fecha),
     month_date = floor_date(date, "month"),              # e.g., 2024-04-01
-    month_label = format(month_date, "%b %Y")             # e.g., "Apr 2024"
+    month_label = format(month_date, "%b %y")             # e.g., "Apr 2024"
   ) |>
   group_by(Categoría, month_date, month_label) |>
   summarise(Peso = sum(kg, na.rm = TRUE), .groups = "drop") |>
@@ -724,21 +695,6 @@ newdata3 |>
   tab_stubhead(
     label = "Material"
   )|>
-  tab_spanner(
-    label = last_4_digits[1],
-    columns = ends_with(last_4_digits[1])
-  )|>
-  tab_spanner(
-    label = last_4_digits[2],
-    columns = ends_with(last_4_digits[2])
-  )|>
-  cols_label_with(
-    fn = ~ ifelse(grepl("\\d{4}$", .), substr(., 1, nchar(.) - 4), .)  # Remove last 4 characters from column names
-  )|>
-  fmt_number(
-    decimals = 0,
-    use_seps = FALSE
-  )|>
   cols_width(
     Categoría ~ "15%",
     Total ~ "10%",
@@ -746,14 +702,18 @@ newdata3 |>
   )|>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
-    fmt = ~ fmt_number(.,decimals = 0,use_seps = FALSE)
+    fmt = ~ fmt_number(.,decimals = 1,use_seps = TRUE,
+                      sep_mark = "'", dec_mark = ",")
   )|>
   tab_style(
     style = cell_borders(
       sides = c("top", "bottom"),
       weight = px(0.66)
     ),
-    locations = cells_grand_summary()
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    )
   )|>
   tab_style(
     style = cell_borders(
@@ -761,10 +721,6 @@ newdata3 |>
       weight = px(0.66)
     ),
     locations = list(
-      cells_column_labels(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_body(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
-      cells_column_spanners(spanners = ends_with(last_4_digits[1])),
-      cells_grand_summary(columns = ends_with(paste("dic", sep = " ", last_4_digits[1]))),
       cells_stub(rows = everything()),
       cells_stub_grand_summary(rows = everything()),
       cells_stubhead()
@@ -782,11 +738,14 @@ newdata3 |>
       )
   )|>
   tab_style(
-    locations = cells_grand_summary(),
+    locations = list(
+      cells_grand_summary(),
+      cells_stub_grand_summary(rows = everything())
+    ),
     style = cell_fill(color = "#ebebeb")
   )|>
   tab_options(
-    table.font.size = px(10.5),
+    table.font.size = px(8.5),
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
@@ -822,6 +781,20 @@ newdata3 |>
       cells_stubhead(),
       cells_row_groups()
     )
+  )|>
+  tab_style(
+    style = cell_text(align = "right"),
+    locations = list(
+      cells_stub()
+    )
+  )|>
+  fmt_number(
+    columns = everything(),
+    rows = everything(),
+    decimals = 1,
+    use_seps = TRUE,
+    sep_mark = "'",
+    dec_mark = ","
   )
 
 ```
