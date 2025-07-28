@@ -507,6 +507,7 @@ thirdReportTable |>
   )|>
   tab_options(
     table.font.size = px(9.5),
+    row_group.font.weight = "bold",
     table.font.names = "Montserrat",
     table.border.top.color = "black",
     table.border.bottom.color = "black",
