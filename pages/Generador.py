@@ -89,7 +89,8 @@ if ss["authentication_status"]:
     # Create a multiselect widget
     Clientes = st.selectbox('Selecciona los clientes para reportar:', fuentes)
     enddate = st.date_input("Fecha de corte", value='today')
-    startdate = enddate - relativedelta(months=12)
+    meses_a_reportar = st.number_input("Meses a reportar", min_value=1, max_value=12, value=12, step=1)
+    startdate = enddate - relativedelta(months=meses_a_reportar)
     nodoc = st.text_input("Número del documento")
     obsevacion = st.text_area("Observaciones adicionales")
     obsevacion2 = repr(obsevacion).replace("'", '"')
