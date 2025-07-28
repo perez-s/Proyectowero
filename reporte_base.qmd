@@ -248,7 +248,7 @@ firstReportTable |>
     rows = everything(),
     decimals = 1,
     use_seps = TRUE,
-    sep_mark = "'",
+    sep_mark = ".",
     dec_mark = ","
   ) 
 
@@ -312,7 +312,7 @@ secondReportTable |>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
     fmt = ~ fmt_number(.,decimals = 1,use_seps = TRUE,
-                      sep_mark = "'", dec_mark = ",")
+                      sep_mark = ".", dec_mark = ",")
   )|>
   tab_style(
     style = cell_borders(
@@ -401,7 +401,7 @@ secondReportTable |>
     rows = everything(),
     decimals = 1,
     use_seps = TRUE,
-    sep_mark = "'",
+    sep_mark = ".",
     dec_mark = ","
   )
 ``` 
@@ -463,7 +463,7 @@ thirdReportTable |>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
     fmt = ~ fmt_number(.,decimals = 0,use_seps = TRUE,
-                      sep_mark = "'", dec_mark = ",")
+                      sep_mark = ".", dec_mark = ",")
   )|>
   tab_style(
     style = cell_borders(
@@ -554,7 +554,7 @@ thirdReportTable |>
     rows = everything(),
     decimals = 1,
     use_seps = TRUE,
-    sep_mark = "'",
+    sep_mark = ".",
     dec_mark = ","
   )|>
   tab_style(
@@ -583,15 +583,15 @@ for (i in 1:length(ciudadesList)) {
   totalKg <- sum(newdataFor$kg, na.rm = TRUE)
   kgPerRecoleccion <- totalKg/numRecolecciones
   if (i == length(ciudadesList) & length(ciudadesList) > 1) {
-    largestring2 <- paste(largestring2,sprintf(" y %s kg de residuos en la ciudad de %s",format(round(kgPerRecoleccion,2), nsmall=2),ciudadesList[i]), sep = "")
+    largestring2 <- paste(largestring2,sprintf(" y %s kg de residuos en la ciudad de %s",format(round(kgPerRecoleccion,2), nsmall=2, big.mark=".", decimal.mark=","),ciudadesList[i]), sep = "")
   }
 
   else if (length(ciudadesList) == 1 | length(ciudadesList) == 2 | i == length(ciudadesList)-1) {
-    largestring2 <- paste(largestring2,sprintf(" %s kg de residuos en la ciudad de %s",format(round(kgPerRecoleccion,2), nsmall=2),ciudadesList[i]), sep = "")
+    largestring2 <- paste(largestring2,sprintf(" %s kg de residuos en la ciudad de %s",format(round(kgPerRecoleccion,2), nsmall=2, big.mark=".", decimal.mark=","),ciudadesList[i]), sep = "")
   }
 
   else {
-    largestring2 <- paste(largestring2,sprintf(" %s kg de residuos en la ciudad de %s,",format(round(kgPerRecoleccion,2), nsmall=2),ciudadesList[i]), sep = "")
+    largestring2 <- paste(largestring2,sprintf(" %s kg de residuos en la ciudad de %s,",format(round(kgPerRecoleccion,2), nsmall=2, big.mark=".", decimal.mark=","),ciudadesList[i]), sep = "")
   }
 }
 
@@ -653,7 +653,7 @@ ggplot(newdata3, aes(x= Porcentaje, y= reorder(Categoría, Porcentaje), fill=Cat
 ```
 
 Composición de los residuos aprovechables por tipo de material 
-(total: `{r} format(round(sum(newdata33$Peso)),2)` kg)
+(total: `{r} format(round(sum(newdata33$Peso)), nsmall=2, big.mark=".", decimal.mark=",")` kg)
 
 ::: 
 
@@ -698,7 +698,7 @@ newdata3 |>
   grand_summary_rows(
     fns =  list(label = "Total", id = "totals", fn = "sum"),
     fmt = ~ fmt_number(.,decimals = 1,use_seps = TRUE,
-                      sep_mark = "'", dec_mark = ",")
+                      sep_mark = ".", dec_mark = ",")
   )|>
   tab_style(
     style = cell_borders(
@@ -788,7 +788,7 @@ newdata3 |>
     rows = everything(),
     decimals = 1,
     use_seps = TRUE,
-    sep_mark = "'",
+    sep_mark = ".",
     dec_mark = ","
   )
 
