@@ -7,7 +7,7 @@ format: PrettyTypst-typst
 editor: 
   render-on-save: true  
 params:
-  client: "Dunkin"
+  client: "Qbano"
   startdate: "2024-07-09"
   enddate: "2025-07-14"
   nodoc: "1"
@@ -157,6 +157,7 @@ for (i in 1:length(ciudadesList)) {
     largestring <- paste(largestring,sprintf(" %s en la ciudad de %s,",numPuntos[i+1],ciudadesList[i]), sep = "")
   }
 }
+largestring <- str_squish(largestring)
 
 ```
 
@@ -412,7 +413,7 @@ secondReportTable |>
   )
 ``` 
 
-Número de recolecciones realizadas por mes de operación
+Cantidad de residuos recolectados por mes de operación
 
 :::
 

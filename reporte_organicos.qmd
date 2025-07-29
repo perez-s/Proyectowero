@@ -72,7 +72,7 @@ data2$Fecha <- as.Date(data2$Fecha, format="%m/%d/%Y")
 data2 <- subset(data2, !is.na(Fecha))
 data2 <- subset(data2, Fuente == params$client)
 projectstartdata <- min(data2$Fecha)
-projectstartdata <- format(projectstartdata, "%d de %B de %Y")s
+projectstartdata <- format(projectstartdata, "%d de %B de %Y")
 
 
 knitr::knit_expand(text = '
@@ -413,7 +413,7 @@ secondReportTable |>
   )
 ``` 
 
-Número de recolecciones realizadas por mes de operación
+Cantidad de residuos recolectados por mes de operación
 
 :::
 
