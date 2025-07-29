@@ -69,8 +69,9 @@ end_date <- as.Date(params$enddate)
 todaysdate <- format(Sys.Date(), "%d de %B de %Y")
 data2 <- read.csv("bd_cocacola.csv", sep=",")
 data2$Fecha <- as.Date(data2$Fecha, format="%m/%d/%Y")
-data2 <- data2[data2$Fuente == params$client,]
-projectstartdata <- min(data2$Fecha, rm.na = TRUE)
+data2 <- subset(data2, !is.na(Fecha))
+data2 <- subset(data2, Fuente == params$client)
+projectstartdata <- min(data2$Fecha)
 projectstartdata <- format(projectstartdata, "%d de %B de %Y")
 
 

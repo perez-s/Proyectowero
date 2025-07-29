@@ -7,7 +7,7 @@ format: PrettyTypst-typst
 editor: 
   render-on-save: true  
 params:
-  client: "Qbano"
+  client: "Dunkin"
   startdate: "2024-07-09"
   enddate: "2025-07-14"
   nodoc: "1"
@@ -69,8 +69,9 @@ end_date <- as.Date(params$enddate)
 todaysdate <- format(Sys.Date(), "%d de %B de %Y")
 data2 <- read.csv("bd_cocacola.csv", sep=",")
 data2$Fecha <- as.Date(data2$Fecha, format="%m/%d/%Y")
-data2 <- data2[data2$Fuente == params$client,]
-projectstartdata <- min(data2$Fecha, rm.na = TRUE)
+data2 <- subset(data2, !is.na(Fecha))
+data2 <- subset(data2, Fuente == params$client)
+projectstartdata <- min(data2$Fecha)
 projectstartdata <- format(projectstartdata, "%d de %B de %Y")
 
 
@@ -156,7 +157,6 @@ for (i in 1:length(ciudadesList)) {
     largestring <- paste(largestring,sprintf(" %s en la ciudad de %s,",numPuntos[i+1],ciudadesList[i]), sep = "")
   }
 }
-largestring <- str_squish(largestring)
 
 ```
 
