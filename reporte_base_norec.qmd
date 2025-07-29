@@ -413,7 +413,7 @@ secondReportTable |>
   )
 ``` 
 
-Cantidad de residuos recolectados por mes de operación
+Cantidad de residuos recogidos (kg) por mes de operación
 
 :::
 
