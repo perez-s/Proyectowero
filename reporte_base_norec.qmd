@@ -67,6 +67,12 @@ enddate <- format(as.Date(params$enddate), "%d de %B de %Y")
 start_date <- as.Date(params$startdate)
 end_date <- as.Date(params$enddate)
 todaysdate <- format(Sys.Date(), "%d de %B de %Y")
+data2 <- read.csv("bd_cocacola.csv", sep=",")
+data2$Fecha <- as.Date(data2$Fecha, format="%m/%d/%Y")
+data2 <- data2[data2$Fuente == params$client,]
+projectstartdata <- min(data2$Fecha)
+projectstartdata <- format(projectstartdata, "%d de %B de %Y")
+
 
 knitr::knit_expand(text = '
 
@@ -97,7 +103,7 @@ table.cell(
 table.cell(
     colspan: 3,
     align: center,
-)[13 de diciembre de 2023],
+)[{{projectstartdata}}],
 [
  *No. del documento:*
  ],
