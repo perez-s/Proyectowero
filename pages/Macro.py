@@ -639,6 +639,16 @@ if ss["authentication_status"]:
 
     st.title('Macro de Registro de Materiales')
 
+    with open("bd_cocacola.csv", "rb") as file:
+                st.download_button(
+                    label="Descargar BD de Coca-Cola",
+                    data=file,
+                    file_name="bd_cocacola.csv",
+                    mime="text/csv",
+                    key="download_button1",
+                    use_container_width=True
+                )
+
     col1, col2 = st.columns(2)
     with col1:
 
