@@ -1,0 +1,110 @@
+---
+title: "Reporte Comparativo"
+format: typst
+editor: 
+  render-on-save: true  
+engine: knitr
+params:
+  mes: "1"
+  año: 2025
+
+---
+
+```{r}
+#| echo: false
+#| include: false
+Sys.setlocale("LC_TIME", "Spanish")
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggrepel)
+library(tidyverse)
+library(viridis)
+# library(paletteer)
+library(ggradar)
+library(data.table)
+library(janitor)
+library(lubridate)
+library(gt)
+library(forcats)
+
+startdate <- format(as.Date(params$startdate), "%d de %B de %Y")
+enddate <- format(as.Date(params$enddate), "%d de %B de %Y")
+start_date <- as.Date(params$startdate)
+end_date <- as.Date(params$enddate)
+data <- read.csv("bd_cocacola.csv", sep=",")
+data <- subset(data, kg > 0)
+data$Fecha <- as.Date(data$Fecha, format="%m/%d/%Y")
+data = data[as.numeric(strftime(data$Fecha, "%Y")) %in% params$año,]
+data = data[as.numeric(strftime(data$Fecha, "%m")) %in% params$mes,]
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+
+newdata <- data |>
+    group_by(Fuente, Ciudad, Etapa) |>
+    summarise(Peso = sum(kg, na.rm = TRUE), .groups = "drop") |>
+    pivot_wider(
+        names_from = Etapa,
+        values_from = Peso,
+        values_fill = 0
+    )
+newdata$Diferencia <- with(newdata, Recolección - Caracterización)
+newdata$Diferenciaporcentual <- with(newdata, (abs(Diferencia) / Recolección))
+
+newdata |>
+    gt() |>
+    fmt_number(
+        columns = everything(),
+        decimals = 1,
+        use_seps = TRUE
+    ) |>
+    data_color(
+        columns = Diferenciaporcentual,
+        method = "numeric",
+        palette = "RdYlGn",
+        reverse = TRUE,
+        domain = c(0,1)
+    )|>
+    fmt_percent(
+    columns = Diferenciaporcentual,
+    decimals = 1
+    )|>
+    cols_label(
+    Diferenciaporcentual = "%"
+    )
+```
+
+```{r}
+#| echo: false
+#| warning: false
+data2 <- subset(data, Etapa == "Recolección")
+newdata <- data2 |>
+    group_by(Fuente, Ciudad) |>
+    summarise(
+        Recolecciones = n(), 
+        .groups = "drop"
+        )
+
+newdata |>
+    gt()
+```
+
+```{r}
+#| echo: false
+#| warning: false
+data3 <- subset(data, Etapa == "Caracterización")
+
+newdata <- data2 |>
+    group_by(Fuente, Ciudad) |>
+    summarise(
+        Caracterizaciones = n(), 
+        .groups = "drop"
+        )
+
+newdata |>
+    gt()
+```

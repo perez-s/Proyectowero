@@ -62,6 +62,7 @@ if ss["authentication_status"]:
 
     ####################################################################################################
     df = pd.read_csv('bd_cocacola.csv')
+    df1 = pd.read_csv('bd_cocacola_fuentes.csv')
 
     
     
@@ -637,6 +638,7 @@ if ss["authentication_status"]:
     enabled_mezclado = True
 
     st.title('Macro de Registro de Materiales')
+
     col1, col2 = st.columns(2)
     with col1:
 
@@ -646,7 +648,7 @@ if ss["authentication_status"]:
         col3, col4 = st.columns(2)
         with col3:
         
-            etapa_list = df['Etapa'].unique().tolist()
+            etapa_list = df1['Etapa'].unique().tolist()
             etapa_input = st.selectbox('Etapa', options=etapa_list, key='etapa_input_key', index=None)
             
             if etapa_input == 'Recolección':
@@ -656,13 +658,13 @@ if ss["authentication_status"]:
                 enabled_materials = False
                 enabled_mezclado = True
 
-            fuente_list = df[df['Etapa'] == etapa_input]['Fuente'].unique().tolist()
+            fuente_list = df1[df1['Etapa'] == etapa_input]['Fuente'].unique().tolist()
             fuente_input=st.selectbox('Fuente', options=fuente_list, key='fuente_input_key', index=None)
 
-            ciudad_list = df[(df['Fuente'] == fuente_input) & (df['Etapa'] == etapa_input)]['Ciudad'].unique().tolist()
+            ciudad_list = df1[(df1['Fuente'] == fuente_input) & (df1['Etapa'] == etapa_input)]['Ciudad'].unique().tolist()
             ciudad_input = st.selectbox('Ciudad', options=ciudad_list, key='ciudad_input_key', index=None)
 
-            sucursal_list = df[(df['Ciudad'] == ciudad_input) & (df['Fuente'] == fuente_input) & (df['Etapa'] == etapa_input)]['Sucursal'].unique().tolist()
+            sucursal_list = df1[(df1['Ciudad'] == ciudad_input) & (['Fuente'] == fuente_input) & (df1['Etapa'] == etapa_input)]['Sucursal'].unique().tolist()
             sucursal_input = st.selectbox('Sucursal', options=sucursal_list, key='sucursal_input_key', index=None)    
         with col4:
 

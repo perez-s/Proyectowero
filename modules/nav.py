@@ -19,6 +19,9 @@ def GeneradorUsers():
 def MacroUsers():
     st.sidebar.page_link("pages/Macro.py", label="Macro Coca-Cola", icon='📈')
 
+def GestorUsers():
+    st.sidebar.page_link("pages/Gestion_BD.py", label="Gestor BD", icon='🗄️')
+
 
 def MenuButtons(user_roles=None):
     if user_roles is None:
@@ -50,5 +53,6 @@ def MenuButtons(user_roles=None):
             GeneradorUsers()
 
         if ss.username in users2:
-            MacroUsers()       
+            MacroUsers()
+            GestorUsers()       
         # (2) users with user and admin roles have access to page 2.     
