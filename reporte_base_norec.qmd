@@ -13,6 +13,7 @@ params:
   nodoc: "1"
   rec: ""
   obs: ""
+  cocacola: ""
 engine: knitr
 
 ---
@@ -96,7 +97,7 @@ table.cell(
     colspan: 3,
     align: center,
 )[Proyecto Piloto Circularidad de
- Residuos (Coca Cola – {{params$client}})],
+ Residuos ({{params$cocacola}}{{params$client}})],
 [
  *Fecha inicio de
  proyecto:*
@@ -163,7 +164,7 @@ largestring <- str_squish(largestring)
 
 # Información General
 
-A continuación, en las siguientes tablas se presentan los datos registrados con corte al `{r} enddate` del proyecto de circularidad de residuos en los `{r} numPuntosDeVenta` puntos de venta de `{r} params$client` seleccionados para el piloto, `{r} largestring`. Estos resultados son gracias al esfuerzo conjunto entre Coca Cola y `{r} params$client` para promover acciones encaminadas a la circularidad, la sostenibilidad y lograr Un Mundo Sin Residuos.
+A continuación, en las siguientes tablas se presentan los datos registrados con corte al `{r} enddate` del proyecto de circularidad de residuos en los `{r} numPuntosDeVenta` puntos de venta de `{r} params$client` seleccionados para el piloto, `{r} largestring`. Estos resultados son gracias al esfuerzo de `{r} params$client` para promover acciones encaminadas a la circularidad, la sostenibilidad y lograr Un Mundo Sin Residuos.
 
 ```{r}
 #| echo: false

@@ -88,6 +88,11 @@ if ss["authentication_status"]:
 
     # Create a multiselect widget
     Clientes = st.selectbox('Selecciona los clientes para reportar:', fuentes)
+    cocacola = st.checkbox("es cliente de Coca-Cola?", value=False, key="cocacola")
+    if cocacola:
+        cocacolastring = "Coca-Cola - "
+    else:
+        cocacolastring = ""
     enddate = st.date_input("Fecha de corte", value='today')
     meses_a_reportar = st.number_input("Meses a reportar", min_value=1, max_value=12, value=12, step=1)
     startdate = enddate - relativedelta(months=meses_a_reportar)
@@ -121,14 +126,14 @@ if ss["authentication_status"]:
                 os.remove(f"{Clientes}.pdf")
             if oganicosselect == "Si":
                 if norecomendacion:
-                    os.system(f"quarto render reporte_organicos_norec.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
+                    os.system(f"quarto render reporte_organicos_norec.qmd -P cocacola:{cocacolastring} -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
                 else:
-                    os.system(f"quarto render reporte_organicos.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf") 
+                    os.system(f"quarto render reporte_organicos.qmd -P cocacola:{cocacolastring} -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf") 
             else:
                 if norecomendacion:      
-                    os.system(f"quarto render reporte_base_norec.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
+                    os.system(f"quarto render reporte_base_norec.qmd -P cocacola:{cocacolastring} -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
                 else:
-                    os.system(f"quarto render reporte_base.qmd -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
+                    os.system(f"quarto render reporte_base.qmd -P cocacola:{cocacolastring} -P obs:{obsevacion2} -P rec:{recomendacionfinal} -P nodoc:{nodoc} -P client:\"{Clientes}\" -P startdate:{startdate} -P enddate:{enddate} --output \"{Clientes}\".pdf")
             try:    
                 with open(f"{Clientes}.pdf", "rb") as file:
                     st.download_button(
