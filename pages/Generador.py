@@ -90,7 +90,7 @@ if ss["authentication_status"]:
     Clientes = st.selectbox('Selecciona los clientes para reportar:', fuentes)
     cocacola = st.checkbox("es cliente de Coca-Cola?", value=False, key="cocacola")
     if cocacola:
-        cocacolastring = "Coca-Cola - "
+        cocacolastring = "Coca-Cola "
     else:
         cocacolastring = ""
     enddate = st.date_input("Fecha de corte", value='today')
