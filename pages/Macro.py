@@ -674,7 +674,7 @@ if ss["authentication_status"]:
             ciudad_list = df1[(df1['Fuente'] == fuente_input) & (df1['Etapa'] == etapa_input)]['Ciudad'].unique().tolist()
             ciudad_input = st.selectbox('Ciudad', options=ciudad_list, key='ciudad_input_key', index=None)
 
-            sucursal_list = df1[(df1['Ciudad'] == ciudad_input) & (['Fuente'] == fuente_input) & (df1['Etapa'] == etapa_input)]['Sucursal'].unique().tolist()
+            sucursal_list = df1[(df1['Ciudad'] == ciudad_input) & (df1['Fuente'] == fuente_input) & (df1['Etapa'] == etapa_input)]['Sucursal'].unique().tolist()
             sucursal_input = st.selectbox('Sucursal', options=sucursal_list, key='sucursal_input_key', index=None)    
         with col4:
 
