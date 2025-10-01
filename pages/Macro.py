@@ -15,6 +15,7 @@ from yaml.loader import SafeLoader
 import base64
 from pathlib import Path
 from datetime import datetime
+import csv
 
 CONFIG_FILENAME = 'config.yaml'
 
@@ -707,42 +708,62 @@ if ss["authentication_status"]:
 
     validcheck=validate_form1(usuario_input, etapa_input, fuente_input, ciudad_input, sucursal_input, fecha_input, gestor_input)  
     def on_click():
-            with open('bd_cocacola.csv', 'a+', encoding='utf-8') as f:    #Append & read mode
+            with open('bd_cocacola.csv', 'a+', encoding='utf-8') as f:
+                fnid = open('bd_cocacola.csv', 'r')
+                newid = len(fnid.readlines()) - 1 
+                print(newid)     
                 if etapa_input == 'Recolección':
-                    f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Mezclado'},{mezclado_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                    f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Mezclado'},{mezclado_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid + 1}\n")
                 if etapa_input == 'Caracterización':
+
                     if acrilico_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Acrílico'},{acrilico_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Acrílico'},{acrilico_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if aluminio_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Aluminio'},{aluminio_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Aluminio'},{aluminio_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if archivo_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Archivo'},{archivo_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Archivo'},{archivo_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if carton_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Cartón'},{carton_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Cartón'},{carton_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if chatarra_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Chatarra'},{chatarra_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Chatarra'},{chatarra_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if organicos_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Orgánicos'},{organicos_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Orgánicos'},{organicos_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if pead_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PEAD'},{pead_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PEAD'},{pead_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if pet_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PET'},{pet_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PET'},{pet_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if PEBD_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PEBD'},{PEBD_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PEBD'},{PEBD_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if plegadiza_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Plegadiza'},{plegadiza_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Plegadiza'},{plegadiza_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if polyboard_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Polyboard'},{polyboard_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Polyboard'},{polyboard_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if pvc_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PVC'},{pvc_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'PVC'},{pvc_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if rechazo_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Rechazo'},{rechazo_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Rechazo'},{rechazo_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if tgrasa_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'T. de grasa'},{tgrasa_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'T. de grasa'},{tgrasa_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if tetrapack_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Tetra Pack'},{tetrapack_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Tetra Pack'},{tetrapack_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                     if vidrio_input > 0:
-                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Vidrio'},{vidrio_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')}\n")
+                        newid+=1
+                        f.write(f"{ciudad_input},{fecha_input.strftime('%m/%d/%Y')},{gestor_input},{aforo_input},{etapa_input},{fuente_input},{sucursal_input},{'Vidrio'},{vidrio_input},{usuario_input},{datetime.now().strftime('%m/%d/%Y %H:%M:%S')},{newid}\n")
                 st.toast('Registro añadido exitosamente', icon='✅')  
 
             st.session_state.mezclado_input_key = 0

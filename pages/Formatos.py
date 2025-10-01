@@ -969,7 +969,10 @@ if ss["authentication_status"]:
                     'TIPO DE MATERIAL': validate_material,
                     'CONDICIONES ESPECIFICAS': validate_conditions,
                     'CANTIDAD (kg)': validate_quantity,
-                    'Nombre de la empresa transformadora': validate_company_name
+                    'Nombre de la empresa transformadora': validate_company_name,
+                    'Nit de la empresa transformadora': validate_quantity,
+                    'Nombre de gestor': validate_company_name,
+                    'Nit gestor': validate_quantity
                 }
                 # Read and validate Excel file
                 is_valid, errors, data = validate_excel_data(
