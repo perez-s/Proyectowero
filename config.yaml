@@ -21,7 +21,7 @@ credentials:
     wero2:
       email: wero@gmail.com
       failed_login_attempts: 0
-      logged_in: false
+      logged_in: true
       name: Wero2
       password: $2b$12$8qqQb84ylw2SyEpNtjHum.hEZoiPXdx/w8YxX0bjeh0IVFuix6JpO
       role: user2
